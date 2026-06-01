@@ -1,0 +1,1840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>whoretopia</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sky: #b8e4f8;
+  --sky2: #d8f0e8;
+  --grass: #78c878;
+  --grass-dark: #5aaa5a;
+  --ui-white: #ffffff;
+  --rose: #ff7098;
+  --rose-dark: #e05878;
+  --mint: #68d8a8;
+  --lavender: #c8b8f8;
+  --lemon: #f8e048;
+  --peach: #ffa878;
+  --sky-blue: #88c8f0;
+  --fight-bg: #0c0918;
+  --shadow: 0 4px 0 rgba(0,0,0,.15);
+  --shadow-lg: 0 6px 0 rgba(0,0,0,.15);
+  --radius: 18px;
+  --radius-sm: 12px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito Sans', sans-serif;
+  background: linear-gradient(160deg, var(--sky) 0%, var(--sky2) 100%);
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  overflow-x: hidden;
+  color: #3a2a3a;
+}
+
+h1, h2, h3, .chunky {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+}
+
+/* ── FIGHT MODAL ── */
+#fight-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--fight-bg);
+  z-index: 150;
+  flex-direction: column;
+  overflow-y: auto;
+}
+#fight-modal.show { display: flex; }
+#fight-modal-inner {
+  padding: 14px 16px 40px;
+  max-width: 520px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+#fight-close-btn {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 13px;
+  color: rgba(255,255,255,.5);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 0;
+  text-align: left;
+  align-self: flex-start;
+}
+#fight-close-btn:hover { color: #fff; }
+
+#fight-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255,255,255,.08);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 14px;
+  color: #ccc;
+}
+#fight-status .fight-stat { display: flex; gap: 6px; align-items: center; }
+
+#canvas-wrap {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0,0,0,.5);
+  background: var(--fight-bg);
+}
+#game-canvas {
+  display: block;
+  width: 100%;
+  max-width: 480px;
+  height: auto;
+}
+#fight-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(12,9,24,.85);
+  color: #fff;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  z-index: 10;
+}
+#fight-overlay h2 { font-size: 26px; color: var(--rose); margin-bottom: 8px; }
+#fight-overlay p { font-size: 13px; color: #ccc; margin-bottom: 16px; text-align: center; padding: 0 20px; line-height: 1.5; }
+#fight-overlay .overlay-btn {
+  padding: 11px 26px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 15px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--rose);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 4px 0 var(--rose-dark);
+  margin: 4px;
+  transition: transform .15s cubic-bezier(.34,1.56,.64,1);
+}
+#fight-overlay .overlay-btn:hover { transform: translateY(-2px); }
+
+/* mobile controls */
+#mobile-controls {
+  display: none;
+  gap: 10px;
+  justify-content: center;
+}
+#mobile-controls button {
+  width: 60px; height: 60px;
+  font-size: 24px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255,255,255,.15);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 3px 0 rgba(0,0,0,.3);
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  transition: transform .1s;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+#mobile-controls button:active { transform: scale(.92); }
+#fire-btn { background: rgba(255,112,152,.4) !important; }
+@media (pointer: coarse) { #mobile-controls { display: flex; } }
+
+/* powerup shop */
+#powerup-shop {
+  background: rgba(255,255,255,.07);
+  border-radius: var(--radius);
+  padding: 12px;
+}
+#powerup-shop h3 {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 14px;
+  color: var(--lavender);
+  margin-bottom: 10px;
+}
+.powerup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.powerup-btn {
+  padding: 8px 10px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: rgba(255,255,255,.1);
+  color: #fff;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+  text-align: left;
+  transition: background .15s, transform .15s cubic-bezier(.34,1.56,.64,1);
+  box-shadow: 0 2px 0 rgba(0,0,0,.2);
+}
+.powerup-btn:hover:not(:disabled) { background: rgba(255,255,255,.2); transform: translateY(-2px); }
+.powerup-btn:disabled { opacity: .4; cursor: default; }
+.powerup-btn .pu-cost { display: block; color: var(--lemon); font-size: 11px; margin-top: 2px; }
+
+/* ── MAIN PANEL ── */
+
+/* ── STATS BAR ── */
+#stats-bar {
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 10px 14px;
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+}
+.stat-bar-wrap {
+  width: 60px;
+  height: 10px;
+  background: #eee;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.stat-bar {
+  height: 100%;
+  border-radius: 5px;
+  transition: width .5s ease;
+}
+.wellness-bar { background: var(--mint); }
+.community-bar { background: var(--lavender); }
+.money-val { color: var(--lemon); text-shadow: 0 1px 0 #c8a000; }
+
+/* ── DAY HEADER ── */
+#day-header {
+  text-align: center;
+  margin-bottom: 10px;
+}
+#day-header h2 { font-size: 22px; color: var(--rose-dark); }
+#day-header .subtitle { font-size: 12px; color: #888; margin-top: 2px; }
+#day-dots { display: flex; gap: 5px; justify-content: center; margin-top: 6px; }
+.day-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.6);
+  border: 2px solid rgba(0,0,0,.1);
+  transition: background .3s;
+}
+.day-dot.done { background: var(--rose); border-color: var(--rose-dark); }
+.day-dot.current { background: var(--lemon); border-color: #c8a000; }
+
+/* ── TOWN MAP ── */
+#town-map {
+  background: transparent;
+  border-radius: var(--radius);
+  padding: 4px 0 10px;
+  margin-bottom: 12px;
+  position: relative;
+  overflow: hidden;
+  min-height: 200px;
+}
+/* sky deco */
+.cloud {
+  position: absolute;
+  top: 12px;
+  background: #fff;
+  border-radius: 30px;
+  opacity: .85;
+}
+.cloud::before, .cloud::after {
+  content: '';
+  position: absolute;
+  background: #fff;
+  border-radius: 50%;
+}
+.cloud1 { width: 60px; height: 20px; left: 20px; top: 14px; }
+.cloud1::before { width: 28px; height: 28px; top: -12px; left: 8px; }
+.cloud1::after { width: 20px; height: 20px; top: -8px; left: 28px; }
+.cloud2 { width: 50px; height: 16px; right: 40px; top: 8px; }
+.cloud2::before { width: 22px; height: 22px; top: -10px; left: 6px; }
+.cloud2::after { width: 16px; height: 16px; top: -6px; left: 24px; }
+.sun {
+  position: absolute;
+  width: 36px; height: 36px;
+  background: var(--lemon);
+  border-radius: 50%;
+  right: 14px; top: 14px;
+  box-shadow: 0 0 0 6px rgba(248,224,72,.3);
+}
+
+#buildings-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 7px;
+  position: relative;
+  z-index: 1;
+  margin-top: 10px;
+}
+
+.building-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 3px 0 rgba(0,0,0,.12);
+  cursor: pointer;
+  transition: transform .18s cubic-bezier(.34,1.56,.64,1), box-shadow .18s;
+  overflow: hidden;
+  position: relative;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.building-card:hover:not(.locked) {
+  transform: translateY(-4px) scale(1.04);
+  box-shadow: 0 7px 0 rgba(0,0,0,.12);
+}
+.building-card.selected {
+  outline: 3px solid var(--rose);
+  transform: translateY(-3px) scale(1.03);
+}
+.building-card.locked { opacity: .45; cursor: default; filter: grayscale(.8); }
+.building-accent {
+  height: 6px;
+  border-radius: 0;
+}
+.building-inner {
+  padding: 5px 4px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.building-emoji-wrap {
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+  position: relative;
+}
+.building-emoji-wrap img {
+  width: 44px; height: 44px;
+  object-fit: contain;
+  display: none;
+}
+.building-emoji-wrap img.loaded { display: block; }
+.building-emoji-wrap .emoji-fallback { position: absolute; font-size: 28px; }
+.building-name {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 9px;
+  text-align: center;
+  color: #555;
+  line-height: 1.2;
+}
+.building-card.selected .building-name { color: var(--rose-dark); }
+
+/* ── DIALOGUE ── */
+#dialogue-box {
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  position: relative;
+  min-height: 80px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #444;
+}
+#dialogue-box::before {
+  content: '';
+  position: absolute;
+  top: -10px; left: 40px;
+  border: 10px solid transparent;
+  border-bottom-color: #fff;
+  border-top: 0;
+}
+#dialogue-speaker {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 13px;
+  color: var(--rose-dark);
+  margin-bottom: 5px;
+}
+#dialogue-text { font-style: italic; }
+
+/* ── HOME ACTIONS ── */
+#home-actions {
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+#home-actions.visible { display: flex; }
+.action-btn {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 14px;
+  padding: 12px 16px;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: transform .15s cubic-bezier(.34,1.56,.64,1), box-shadow .15s;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.action-btn:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 7px 0 rgba(0,0,0,.15);
+}
+.action-btn:active:not(:disabled) { transform: translateY(0); }
+.action-btn:disabled { opacity: .45; cursor: default; transform: none; box-shadow: var(--shadow); }
+.action-btn .cost { font-size: 11px; font-weight: 600; opacity: .7; white-space: nowrap; }
+.btn-rest { background: var(--mint); color: #1a5a3a; }
+.btn-book { background: var(--lemon); color: #7a5a00; }
+.btn-screened { background: var(--peach); color: #7a3a00; }
+.btn-fight { background: var(--rose); color: #fff; }
+
+/* ── PERKS LIST ── */
+#perks-section {
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 12px 14px;
+  margin-bottom: 12px;
+}
+#perks-section h3 { font-size: 14px; color: var(--rose-dark); margin-bottom: 8px; }
+.perk-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  font-size: 12px;
+  border-bottom: 1px solid #f0f0f0;
+  color: #aaa;
+}
+.perk-item:last-child { border-bottom: none; }
+.perk-item.unlocked { color: #444; }
+.perk-item .perk-check { font-size: 14px; }
+.perk-item .perk-name { font-family: 'Nunito', sans-serif; font-weight: 700; }
+
+/* ── END DAY BTN ── */
+#end-day-btn {
+  width: 100%;
+  padding: 14px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 16px;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--rose);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 5px 0 var(--rose-dark);
+  transition: transform .15s cubic-bezier(.34,1.56,.64,1), box-shadow .15s;
+  margin-bottom: 12px;
+}
+#end-day-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 0 var(--rose-dark); }
+#end-day-btn:active { transform: translateY(2px); box-shadow: 0 3px 0 var(--rose-dark); }
+#end-day-btn:disabled { opacity: .5; cursor: default; transform: none; box-shadow: 0 5px 0 var(--rose-dark); }
+
+/* ── VISITS REMAINING ── */
+#visits-info {
+  text-align: center;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 8px;
+}
+#visits-info span { color: var(--rose-dark); }
+
+/* ── FIGHT PANEL ── */
+#fight-panel { padding: 12px 16px 80px; max-width: 520px; margin: 0 auto; }
+
+#fight-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255,255,255,.1);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  margin-bottom: 10px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 14px;
+  color: #ccc;
+}
+#fight-status .fight-stat { display: flex; gap: 6px; align-items: center; }
+
+#canvas-wrap {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0,0,0,.5);
+  margin-bottom: 12px;
+  background: var(--fight-bg);
+}
+#game-canvas {
+  display: block;
+  width: 100%;
+  max-width: 480px;
+  height: auto;
+}
+#fight-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(12,9,24,.8);
+  color: #fff;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  z-index: 10;
+}
+#fight-overlay h2 { font-size: 28px; color: var(--rose); margin-bottom: 8px; }
+#fight-overlay p { font-size: 14px; color: #ccc; margin-bottom: 20px; text-align: center; padding: 0 20px; }
+#fight-overlay .overlay-btn {
+  padding: 12px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 16px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--rose);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 4px 0 var(--rose-dark);
+  margin: 4px;
+  transition: transform .15s cubic-bezier(.34,1.56,.64,1);
+}
+#fight-overlay .overlay-btn:hover { transform: translateY(-2px); }
+#fight-overlay .overlay-btn.secondary { background: rgba(255,255,255,.1); box-shadow: 0 4px 0 rgba(0,0,0,.3); }
+
+/* mobile controls */
+#mobile-controls {
+  display: none;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+#mobile-controls button {
+  width: 60px; height: 60px;
+  font-size: 24px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255,255,255,.15);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 3px 0 rgba(0,0,0,.3);
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  transition: transform .1s;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+#mobile-controls button:active { transform: scale(.92); }
+#fire-btn { background: rgba(255,112,152,.4) !important; }
+
+@media (pointer: coarse) { #mobile-controls { display: flex; } }
+
+/* powerup shop */
+#powerup-shop {
+  background: rgba(255,255,255,.07);
+  border-radius: var(--radius);
+  padding: 12px;
+  margin-bottom: 12px;
+}
+#powerup-shop h3 {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 14px;
+  color: var(--lavender);
+  margin-bottom: 10px;
+}
+.powerup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.powerup-btn {
+  padding: 8px 10px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: rgba(255,255,255,.1);
+  color: #fff;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+  text-align: left;
+  transition: background .15s, transform .15s cubic-bezier(.34,1.56,.64,1);
+  box-shadow: 0 2px 0 rgba(0,0,0,.2);
+}
+.powerup-btn:hover:not(:disabled) { background: rgba(255,255,255,.2); transform: translateY(-2px); }
+.powerup-btn:disabled { opacity: .4; cursor: default; }
+.powerup-btn .pu-cost { display: block; color: var(--lemon); font-size: 11px; margin-top: 2px; }
+
+/* ── ENDING SCREEN ── */
+#ending-screen {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(160deg, var(--sky) 0%, var(--sky2) 100%);
+  z-index: 200;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  padding: 32px 24px 60px;
+  text-align: center;
+}
+#ending-screen.show { display: flex; }
+#ending-map {
+  display: grid;
+  grid-template-columns: repeat(4, 56px);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.ending-building {
+  width: 56px; height: 56px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  background: #fff;
+  box-shadow: 0 3px 0 rgba(0,0,0,.1);
+}
+.ending-building.locked {
+  background: rgba(0,0,0,.12);
+  filter: grayscale(1);
+  opacity: .4;
+}
+#ending-card {
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  padding: 24px;
+  max-width: 380px;
+  width: 100%;
+}
+#ending-title {
+  font-size: 26px;
+  color: var(--rose-dark);
+  margin-bottom: 10px;
+}
+#ending-body {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+#ending-stats {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 16px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+}
+#ending-close {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 15px;
+  color: #fff;
+  cursor: pointer;
+  background: var(--rose);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 12px 24px;
+  box-shadow: 0 4px 0 var(--rose-dark);
+  display: block;
+  width: 100%;
+  margin-bottom: 10px;
+  transition: transform .15s cubic-bezier(.34,1.56,.64,1);
+}
+#ending-close:hover { transform: translateY(-2px); }
+#ending-back {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  color: #aaa;
+  text-decoration: underline;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+.closing-line {
+  font-style: italic;
+  color: var(--rose-dark) !important;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+}
+
+/* ── ACTION SECTION ── */
+#action-section { margin-bottom: 12px; }
+.action-group-label {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: #aaa;
+  margin: 10px 0 5px;
+}
+#home-actions, #neighbor-actions { display: flex; flex-direction: column; gap: 8px; }
+#action-section.done #home-actions button,
+#action-section.done #neighbor-actions button { opacity: .35; pointer-events: none; }
+
+/* ── ACTIONS COUNTER ── */
+#actions-counter {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 8px;
+  text-align: center;
+}
+#actions-counter .count { color: var(--rose-dark); font-size: 16px; }
+
+/* ── DAY DONE STATE ── */
+#day-done-card {
+  display: none;
+  background: var(--mint);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px 16px;
+  margin-top: 10px;
+  margin-bottom: 4px;
+  animation: bounceIn .35s cubic-bezier(.34,1.56,.64,1);
+}
+#day-done-card.show { display: block; }
+#day-done-card p { font-size: 13px; color: #1a5a3a; margin-bottom: 10px; line-height: 1.5; }
+#day-done-btn {
+  width: 100%;
+  padding: 13px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 15px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: #1a7a4a;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #0a4a28;
+  transition: transform .15s cubic-bezier(.34,1.56,.64,1);
+}
+#day-done-btn:hover { transform: translateY(-2px); }
+#toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: #2a1a2a;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  z-index: 500;
+  opacity: 0;
+  transition: opacity .25s, transform .25s;
+  pointer-events: none;
+  text-align: center;
+  max-width: 320px;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── ARRIVAL BANNER ── */
+#arrival-banner, #perk-banner {
+  border-radius: var(--radius-sm);
+  padding: 10px 14px 10px 14px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  display: none;
+  animation: bounceIn .4s cubic-bezier(.34,1.56,.64,1);
+  position: relative;
+}
+#arrival-banner { background: var(--mint); color: #1a5a3a; }
+#perk-banner { background: var(--lavender); color: #4a2a8a; }
+#arrival-banner.show, #perk-banner.show { display: block; }
+.banner-close {
+  position: absolute;
+  top: 8px; right: 10px;
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  opacity: .5;
+  line-height: 1;
+  padding: 0;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+}
+.banner-close:hover { opacity: 1; }
+
+@keyframes bounceIn {
+  from { transform: scale(.85); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+
+</style>
+</head>
+<body>
+
+<div id="town-panel" style="padding: 12px 16px 80px; max-width: 520px; margin: 0 auto;">
+
+  <div id="stats-bar">
+    <div class="stat">
+      🌿
+      <div class="stat-bar-wrap"><div class="stat-bar wellness-bar" id="wellness-bar" style="width:100%"></div></div>
+      <span id="wellness-val">100</span>
+    </div>
+    <div class="stat">
+      🤝
+      <div class="stat-bar-wrap"><div class="stat-bar community-bar" id="community-bar" style="width:0%"></div></div>
+      <span id="community-val">0</span>
+    </div>
+    <div class="stat">💰 <span class="money-val" id="money-val">0</span></div>
+  </div>
+
+  <div id="day-header">
+    <h2 id="day-title">day 1</h2>
+    <div class="subtitle" id="day-subtitle">morning light through the curtains</div>
+    <div id="day-dots"></div>
+  </div>
+
+  <div id="arrival-banner"><button class="banner-close" onclick="this.parentElement.classList.remove('show')">✕</button><span id="arrival-text"></span></div>
+  <div id="perk-banner"><button class="banner-close" onclick="this.parentElement.classList.remove('show')">✕</button><span id="perk-text"></span></div>
+
+  <div id="town-map">
+    <div class="cloud cloud1"></div>
+    <div class="cloud cloud2"></div>
+    <div class="sun"></div>
+    <div id="buildings-grid"></div>
+  </div>
+
+  <div id="actions-counter">actions left today: <span class="count" id="actions-left">2</span></div>
+
+  <!-- dialogue always visible -->
+  <div id="dialogue-box">
+    <div id="dialogue-speaker" style="display:none"></div>
+    <div id="dialogue-text">the morning is yours. choose an action below.</div>
+  </div>
+
+  <!-- day-done card appears below dialogue when both actions used -->
+  <div id="day-done-card">
+    <p id="day-done-text">the day settles into evening. the street glows a little. you did good today.</p>
+    <button id="day-done-btn" onclick="advanceDay()">start day 2 →</button>
+  </div>
+
+  <div id="action-section">
+    <div class="action-group-label">🏠 at home</div>
+    <div id="home-actions">
+      <button class="action-btn btn-rest" onclick="doHomeAction('rest')">
+        🌙 rest <span class="cost">+40 wellness</span>
+      </button>
+      <button class="action-btn btn-book" id="btn-book" onclick="doHomeAction('book')">
+        📋 take a booking <span class="cost">+30 💰 −8 wellness</span>
+      </button>
+      <button class="action-btn btn-screened" id="btn-screened" onclick="doHomeAction('screened')" style="display:none">
+        ✅ screened booking <span class="cost">+50 💰 −4 wellness</span>
+      </button>
+      <button class="action-btn btn-fight" id="btn-fight-home" onclick="goFight()">
+        ⚡ fight the law <span class="cost">need >40 wellness</span>
+      </button>
+    </div>
+
+    <div class="action-group-label" id="neighbor-label" style="display:none">🌸 visit a neighbor</div>
+    <div id="neighbor-actions"></div>
+  </div>
+
+  <div id="perks-section">
+    <h3>perks won</h3>
+    <div id="perks-list"></div>
+  </div>
+
+</div>
+
+<!-- FIGHT MODAL -->
+<div id="fight-modal">
+  <div id="fight-modal-inner">
+    <button id="fight-close-btn" onclick="closeFightModal()">← back to your street</button>
+
+    <div id="fight-status">
+      <div class="fight-stat">🌿 <span id="fight-wellness-val">100</span></div>
+      <div class="fight-stat">💰 <span id="fight-money-val">0</span></div>
+      <div class="fight-stat">❤️ <span id="fight-lives">3</span></div>
+      <div class="fight-stat">⭐ <span id="fight-score">0</span></div>
+    </div>
+
+    <div id="canvas-wrap">
+      <canvas id="game-canvas" width="480" height="420"></canvas>
+      <div id="fight-overlay">
+        <h2>⚡ fight the law</h2>
+        <p id="overlay-msg">clear the wave to win a perk.<br>arrow keys + space, or use the buttons below.</p>
+        <button class="overlay-btn" onclick="startFight()">start fighting</button>
+      </div>
+    </div>
+
+    <div id="mobile-controls">
+      <button id="mb-left" ontouchstart="keys.left=true" ontouchend="keys.left=false">◀</button>
+      <button id="fire-btn" ontouchstart="keys.fire=true" ontouchend="keys.fire=false">🌸</button>
+      <button id="mb-right" ontouchstart="keys.right=true" ontouchend="keys.right=false">▶</button>
+    </div>
+
+    <div id="powerup-shop">
+      <h3>🛒 powerups (buy before fighting)</h3>
+      <div class="powerup-grid">
+        <button class="powerup-btn" onclick="buyPowerup('life')">❤️ extra life<span class="pu-cost">25 💰</span></button>
+        <button class="powerup-btn" onclick="buyPowerup('shield')">🛡️ solidarity shield<span class="pu-cost">30 💰</span></button>
+        <button class="powerup-btn" onclick="buyPowerup('slow')">🐢 slow enemies<span class="pu-cost">35 💰</span></button>
+        <button class="powerup-btn" onclick="buyPowerup('wellness')">🌿 +20 wellness<span class="pu-cost">20 💰</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ENDING SCREEN -->
+<div id="ending-screen">
+  <div id="ending-map"></div>
+  <div id="ending-card">
+    <h2 class="chunky" id="ending-title"></h2>
+    <p id="ending-body"></p>
+    <p id="ending-stats"></p>
+    <p class="closing-line">"this is what it could look like."</p>
+    <br>
+    <button id="ending-close" onclick="restartGame()">play again</button>
+    <button id="ending-back" onclick="restartGame()">← back to town</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// GAME STATE
+// ═══════════════════════════════════════════════════
+const BUILDINGS = [
+  { id:'home',      name:'your place',   emoji:'🏠', accent:'#ff7098', unlocked:true,  perkNeeded:0 },
+  { id:'marigold',  name:"marigold's",   emoji:'🌼', accent:'#f8e048', unlocked:true,  perkNeeded:0 },
+  { id:'rose',      name:"rose's",       emoji:'🌹', accent:'#ffa878', unlocked:false, perkNeeded:1 },
+  { id:'clover',    name:"clover's",     emoji:'⚖️', accent:'#68d8a8', unlocked:false, perkNeeded:2 },
+  { id:'chamomile', name:"chamomile's",  emoji:'🏥', accent:'#ffa878', unlocked:false, perkNeeded:3 },
+  { id:'thistle',   name:"thistle's",    emoji:'🔗', accent:'#c8b8f8', unlocked:false, perkNeeded:4 },
+  { id:'center',    name:'community center', emoji:'🏛️', accent:'#88c8f0', unlocked:false, perkNeeded:5 },
+];
+
+const PERKS = [
+  {
+    id:1, name:'screened booking',
+    law:'FOSTA-SESTA shut down client screening platforms like Backpage, P411, and MyRedBook',
+    why:'screening lets workers vet clients before meeting them — it\'s one of the most direct safety tools available. without it, every booking is a leap of faith.',
+    unlock:'your booking page now lets you screen clients before confirming. the difference in how you feel walking into a session is immediate.',
+    neighborId:'rose', neighborName:"rose's",
+    neighborSkill:'rose is a community organiser and zine-maker. she\'s been building safety networks informally for years — now she can do it openly.',
+    neighborLine:"🌹 rose moves in next door. 'i've been waiting for this,' she says, and starts pinning things to the wall before she's even unpacked.",
+  },
+  {
+    id:2, name:'safety registry',
+    law:'FOSTA-SESTA made it illegal to share client safety information between workers, even privately',
+    why:'workers have always shared safety information with each other — bad client lists, warning signs, useful contacts. criminalising this isolated everyone and removed a layer of protection that cost nothing.',
+    unlock:'a shared safety registry is now running on the street. workers can flag clients and share warnings. information flows again.',
+    neighborId:'clover', neighborName:"clover's",
+    neighborSkill:'clover is a lawyer who specialises in workers\' rights. she built a practice specifically to serve people the legal system ignores.',
+    neighborLine:"⚖️ clover hangs her sign. LEGAL AID. WE'LL FIGURE IT OUT. she has already started a drop-in calendar.",
+  },
+  {
+    id:3, name:'worker-owned payment',
+    law:'PayPal, Stripe, Venmo and most major payment processors ban sex workers in their terms of service — accounts are frozen without warning, often with no appeal',
+    why:'losing access to payment tools doesn\'t just mean lost income. it means losing savings, losing the ability to pay rent, losing financial history. it happens overnight with no recourse.',
+    unlock:'a worker-owned payment cooperative is now running on the street. no frozen accounts, no arbitrary bans, no explaining yourself to an algorithm.',
+    neighborId:'chamomile', neighborName:"chamomile's",
+    neighborSkill:'chamomile is a nurse and harm reduction specialist. she opened her clinic because she\'d seen too many people unable to access care safely.',
+    neighborLine:"🏥 chamomile's clinic opens. there\'s a plant by the door and a handwritten note: walk-ins welcome, no questions asked.",
+  },
+  {
+    id:4, name:'secure hosting',
+    law:'a CDA 230 carve-out lets platforms remove content and accounts related to sex work preemptively — websites, forums, and hosting providers deplatform workers without notice or appeal',
+    why:'losing your online presence means losing income, losing community connections, losing years of work. platforms know this and use it. secure hosting changes what\'s possible.',
+    unlock:'the street now has its own hosting infrastructure. no platform can take it down. your presence online is yours.',
+    neighborId:'thistle', neighborName:"thistle's",
+    neighborSkill:"thistle runs a worker-owned BDSM space — professional, safe, and built entirely around the workers who use it. she knows what it means to build something that can't be taken.",
+    neighborLine:"🔗 thistle opens the doors. the music is already on. 'come in,' she says. 'this place is ours.'",
+  },
+  {
+    id:5, name:'decrim status',
+    law:'full decriminalisation of sex work — where selling and buying are both legal, with no criminal penalties for workers — does not exist in most of the world',
+    why:'decrim doesn\'t make sex work glamorous or fix everything. it removes the threat of arrest, the pressure to work in dangerous conditions to avoid police, and the legal barriers to accessing housing, banking, and healthcare. it makes the work survivable.',
+    unlock:'decrim is in effect on this street. every action you take costs a little less. wellness gains +10 everywhere, because safety changes what work feels like.',
+    neighborId:'center', neighborName:'the community center',
+    neighborSkill:"the community center is built by everyone on the street together. it belongs to all of them. it's the proof that this works.",
+    neighborLine:"🏛️ the community center is finished. someone has put flowers on the steps. the lights are on inside.",
+  },
+];
+
+const ARRIVAL_LINES = {
+  rose:      "🌹 rose arrives carrying a potted fern and a hand-stapled zine. she grins. 'i brought snacks too,' she says, patting her bag.",
+  clover:    "⚖️ clover hangs a little sign in her window — hand-lettered, slightly crooked, full of heart. LEGAL AID. LET'S FIGURE IT OUT.",
+  chamomile: "🏥 chamomile's door opens with a little bell and the smell of something good. a plant sits on the step, freshly watered.",
+  thistle:   "🔗 thistle flips the sign to OPEN and turns up the music. the street just got a little brighter.",
+  center:    "🏛️ the community center is finished. someone has already put flowers on the front steps.",
+};
+
+const NEIGHBOR_EVENTS = {
+  marigold: [
+    { text:"the coffee is ready before you even sit down. you end up talking for two hours about everything and nothing. the light shifts without you noticing. you needed this more than you knew.", wellness:+20, community:+10 },
+    { text:"marigold pulls out an old photo album — workers who organised, who laughed, who built things that lasted. 'look how many of us there were,' she says, delighted.", wellness:+18, community:+15 },
+    { text:"you help her repot a trailing plant that has taken over an entire shelf. there is soil everywhere. you're both laughing by the end.", wellness:+22, community:+8 },
+    { text:"she makes tea and puts on an old record and you both just sit in the good kind of quiet. you leave feeling like yourself again.", wellness:+25, community:+10 },
+    { text:"marigold is teaching herself to bake sourdough. it is not going well, but she is having so much fun with it. you taste a slightly lopsided slice and it is perfect.", wellness:+20, community:+12 },
+  ],
+  rose: [
+    { text:"rose is illustrating a new zine about rights and she wants your opinion on the cover. it's beautiful. you tell her so and mean it.", wellness:+12, community:+18 },
+    { text:"she has covered her entire community board in sticky notes — resources, warmth, a little drawing of a cat. you add something and feel immediately at home.", wellness:+10, community:+20 },
+    { text:"rose found a new forum and has already decorated her profile with tiny pixel flowers. she sends you the link and you bookmark it instantly.", wellness:+15, community:+15 },
+    { text:"you make dinner together — pasta, slightly too much garlic, good music. it's the kind of evening that makes everything feel possible.", wellness:+18, community:+16 },
+  ],
+  clover: [
+    { text:"clover sketches out what decrim would look like on your street, practically, day to day. she draws little diagrams. you leave with notes and a head full of possibility.", wellness:+15, community:+15 },
+    { text:"she tells you about a housing win she helped with this week, careful with details but beaming a little. 'the system is clunky but we found a door,' she says.", wellness:+12, community:+18 },
+    { text:"you bring her a situation you weren't sure how to handle. she listens, thinks, and offers three useful ideas. 'you've got this,' she says as you leave.", wellness:+20, community:+12 },
+    { text:"clover is writing a policy brief and lets you read a section. it's sharp and warm and funnier than you expected. you didn't know legal writing could sparkle.", wellness:+10, community:+20 },
+  ],
+  chamomile: [
+    { text:"chamomile checks in the way only a friend with good training can — present, unhurried, actually curious. you feel genuinely seen.", wellness:+25, community:+10 },
+    { text:"she's running a drop-in today and lets you help. it's quiet and purposeful and exactly the kind of work that matters. you go home glowing a little.", wellness:+20, community:+18 },
+    { text:"she has a whole box of useful things and hands you exactly what you needed without any fuss. 'i just keep a stock,' she says, like it's nothing. it isn't nothing.", wellness:+28, community:+8 },
+    { text:"you sit in the little garden behind her clinic, drinking tea in the sun. she asks how you really are. you actually tell her. it helps more than you expected.", wellness:+30, community:+12 },
+  ],
+  thistle: [
+    { text:"you take a session through the house — proper equipment, clear house rules, someone at the door who greets you by name. the work hums. safety changes everything.", wellness:+20, money:+65 },
+    { text:"thistle runs a rope workshop on saturday afternoons and you pick up three new knots. your hands feel clever and capable. you're already thinking about next week.", wellness:+18, community:+18 },
+    { text:"a play party, low-key, lovely people, everyone checking in with each other throughout. you leave feeling like the world has figured something out that it should have ages ago.", wellness:-5, community:+25, money:+30 },
+    { text:"thistle gives a talk on consent and trust and what safety actually makes possible. it's the most interesting thing you've heard all week and you take notes in the margins of your hand.", wellness:+15, community:+22 },
+    { text:"a quiet reset evening — candles, soft music, the kind of company that doesn't need you to perform. you float home.", wellness:+30, community:+14 },
+  ],
+  center: [
+    { text:"the community center is buzzing today — someone's running a Know Your Rights workshop and there are homemade cookies. you sit in the back with your notebook and feel very much part of something.", wellness:+15, community:+25 },
+    { text:"you help set up for an event — folding chairs, making tea, meeting people you feel like you've always known. the afternoon passes like a good dream.", wellness:+20, community:+20 },
+    { text:"a town hall about decrim progress. the room is warm and a little chaotic and everyone is actually listening. this is exactly what it's supposed to look like.", wellness:+18, community:+28 },
+    { text:"the noticeboard is so full it's spilling onto a second board — resources, poetry, a child's drawing of the street, an anonymous thank-you note. you stand in front of it for a long time.", wellness:+22, community:+22 },
+  ],
+};
+
+// perk-unlock bonus events
+const PERK_EVENTS = {
+  marigold: {
+    1: "marigold pulls up the new screening tool on her phone. 'it actually works,' she says, sounding a little amazed. you both sit with the wonder of that for a moment.",
+    3: "she shows you the payment app — the one that finally, genuinely, works. 'no more frozen accounts,' she says, and does a small celebratory wiggle.",
+  },
+  rose: {
+    2: "rose has a whole spreadsheet going — community-maintained, full of useful notes, already beautifully colour-coded. 'we can actually do this now,' she says. she's already done half of it.",
+  },
+  clover: {
+    2: "clover updates the safety registry with a happy little flourish. 'it's legal to share now,' she says. 'that changes so much.' she's already writing the announcement.",
+    4: "clover explains the hosting win in plain, bright language, drawing a little diagram. platforms can't just vanish us anymore. she makes you repeat it back so you really have it.",
+  },
+  chamomile: {
+    3: "chamomile processes her first digital payment and stares at the confirmation screen for a long, happy moment. 'i've been waiting years for this,' she says quietly.",
+  },
+  thistle: {
+    5: "thistle says it like she's been saving it: 'the work is still the work, but we're not criminals anymore. do you know how much lighter that makes everything feel?'",
+  },
+};
+
+// Subtitles by day
+const DAY_SUBTITLES = [
+  "morning light through the curtains ✨",
+  "the street is waking up 🌱",
+  "something good is taking shape",
+  "you can feel it building 🌸",
+  "the days have a rhythm now",
+  "halfway there and still glowing ⭐",
+  "good things take time, and you have it",
+  "the street is alive and so are you 🌿",
+  "almost there — look how far you've come",
+  "the last day. this is what it could look like. 🏡",
+];
+
+let G = {}; // game state
+function initGame() {
+  G = {
+    day: 1,
+    actionsUsed: 0,
+    wellness: 100,
+    community: 0,
+    money: 0,
+    perksWon: 0,
+    buildings: JSON.parse(JSON.stringify(BUILDINGS)),
+    visitedToday: [],
+    newPerkToday: null,
+    dayEnded: false,
+  };
+}
+initGame();
+
+// ═══════════════════════════════════════════════════
+// UI HELPERS
+// ═══════════════════════════════════════════════════
+function openFightModal() {
+  document.getElementById('fight-modal').classList.add('show');
+  resetFightOverlay();
+}
+
+function closeFightModal() {
+  const fightWasPlayed = game.frameCount > 0;
+  if (game.running) { cancelAnimationFrame(animId); game.running = false; }
+  game.frameCount = 0;
+  document.getElementById('fight-modal').classList.remove('show');
+  if (fightWasPlayed) {
+    useAction();
+  } else {
+    updateUI();
+  }
+}
+
+function showToast(msg, dur=2500) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), dur);
+}
+
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+function statChange(stat, delta) {
+  if (stat === 'wellness') G.wellness = clamp(G.wellness + delta, 0, 100);
+  else if (stat === 'community') G.community = clamp(G.community + delta, 0, 200);
+  else if (stat === 'money') G.money = Math.max(0, G.money + delta);
+}
+
+function updateUI() {
+  // stats
+  document.getElementById('wellness-val').textContent = Math.round(G.wellness);
+  document.getElementById('wellness-bar').style.width = G.wellness + '%';
+  document.getElementById('community-val').textContent = Math.round(G.community);
+  document.getElementById('community-bar').style.width = Math.min(100, G.community) + '%';
+  document.getElementById('money-val').textContent = G.money;
+  const fwv = document.getElementById('fight-wellness-val');
+  if (fwv) fwv.textContent = Math.round(G.wellness);
+  const fmv = document.getElementById('fight-money-val');
+  if (fmv) fmv.textContent = G.money;
+
+  // day header
+  document.getElementById('day-title').textContent = 'day ' + G.day;
+  document.getElementById('day-subtitle').textContent = DAY_SUBTITLES[G.day - 1] || '';
+
+  // day dots
+  const dots = document.getElementById('day-dots');
+  dots.innerHTML = '';
+  for (let i = 1; i <= 10; i++) {
+    const d = document.createElement('div');
+    d.className = 'day-dot' + (i < G.day ? ' done' : i === G.day ? ' current' : '');
+    dots.appendChild(d);
+  }
+
+  // actions counter
+  const left = Math.max(0, 2 - G.actionsUsed);
+  document.getElementById('actions-left').textContent = left;
+
+  // buildings grid
+  renderBuildings();
+  renderNeighborActions();
+
+  // action section done state
+  const isDone = G.dayEnded || G.actionsUsed >= 2;
+  document.getElementById('action-section').classList.toggle('done', isDone);
+
+  // screened booking replaces regular booking when unlocked
+  const screenedUnlocked = G.perksWon >= 1;
+  const bookBtn = document.getElementById('btn-book');
+  const screenedBtn = document.getElementById('btn-screened');
+  if (bookBtn) bookBtn.style.display = (!screenedUnlocked && !isDone) ? 'flex' : 'none';
+  if (screenedBtn) screenedBtn.style.display = (screenedUnlocked && !isDone) ? 'flex' : 'none';
+
+  const fightBtn = document.getElementById('btn-fight-home');
+  if (fightBtn) fightBtn.disabled = G.wellness <= 40;
+
+  // dialogue always shown; day-done card appears when actions used up
+  const dialogue = document.getElementById('dialogue-box');
+  dialogue.style.display = '';
+  const ddc = document.getElementById('day-done-card');
+  if (isDone) {
+    ddc.classList.add('show');
+    const ddBtn = document.getElementById('day-done-btn');
+    if (ddBtn) ddBtn.textContent = G.day >= 10 ? 'see your ending →' : 'start day ' + (G.day + 1) + ' →';
+  } else {
+    ddc.classList.remove('show');
+  }
+
+  // perks
+  renderPerks();
+}
+
+function renderBuildings() {
+  const grid = document.getElementById('buildings-grid');
+  grid.innerHTML = '';
+  G.buildings.forEach(b => {
+    const card = document.createElement('div');
+    card.className = 'building-card' + (!b.unlocked ? ' locked' : '');
+    card.innerHTML = `
+      <div class="building-accent" style="background:${b.accent}"></div>
+      <div class="building-inner">
+        <div class="building-emoji-wrap">
+          <img src="img/${b.id}.png" alt="${b.emoji}" onload="this.classList.add('loaded')" onerror="this.style.display='none'">
+          <span class="emoji-fallback">${b.emoji}</span>
+        </div>
+        <div class="building-name">${b.name}</div>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+function renderNeighborActions() {
+  const container = document.getElementById('neighbor-actions');
+  const label = document.getElementById('neighbor-label');
+  container.innerHTML = '';
+  const neighbors = G.buildings.filter(b => b.id !== 'home' && b.unlocked);
+  label.style.display = neighbors.length ? '' : 'none';
+  neighbors.forEach(b => {
+    const btn = document.createElement('button');
+    btn.className = 'action-btn';
+    btn.style.cssText = `background:${b.accent}22; color:#333; border: 2px solid ${b.accent}66;`;
+    btn.innerHTML = `${b.emoji} visit ${b.name} <span class="cost">wellness + community</span>`;
+    btn.onclick = () => triggerVisit(b.id);
+    container.appendChild(btn);
+  });
+}
+
+function renderPerks() {
+  const list = document.getElementById('perks-list');
+  list.innerHTML = '';
+  PERKS.forEach(p => {
+    const won = G.perksWon >= p.id;
+    const div = document.createElement('div');
+    div.className = 'perk-item' + (won ? ' unlocked' : '');
+    div.innerHTML = `<span class="perk-check">${won ? '✅' : '⬜'}</span><span class="perk-name">${p.name}</span>`;
+    list.appendChild(div);
+  });
+}
+
+function triggerVisit(id) {
+  if (G.actionsUsed >= 2 || G.dayEnded) return;
+
+  const events = NEIGHBOR_EVENTS[id];
+  if (!events) return;
+
+  let evt = null;
+  const perkEvts = PERK_EVENTS[id];
+  if (perkEvts && G.newPerkToday) {
+    const bonus = perkEvts[G.newPerkToday];
+    if (bonus) evt = { text: bonus, wellness:+15, community:+12 };
+  }
+  if (!evt) evt = events[Math.floor(Math.random() * events.length)];
+
+  const b = G.buildings.find(x => x.id === id);
+  setDialogue(b.emoji + ' ' + b.name, evt.text);
+
+  if (evt.wellness) statChange('wellness', evt.wellness);
+  if (evt.community) statChange('community', evt.community);
+  if (evt.money) statChange('money', evt.money);
+
+  G.visitedToday.push(id);
+
+  let changes = [];
+  if (evt.wellness) changes.push((evt.wellness > 0 ? '+' : '') + evt.wellness + ' 🌿');
+  if (evt.community) changes.push((evt.community > 0 ? '+' : '') + evt.community + ' 🤝');
+  if (evt.money) changes.push((evt.money > 0 ? '+' : '') + evt.money + ' 💰');
+  if (changes.length) showToast(changes.join('  '), 2000);
+
+  useAction();
+}
+
+function setDialogue(speaker, text) {
+  const sp = document.getElementById('dialogue-speaker');
+  sp.textContent = speaker;
+  sp.style.display = speaker ? '' : 'none';
+  document.getElementById('dialogue-text').textContent = text;
+}
+
+function useAction() {
+  G.actionsUsed++;
+  if (G.actionsUsed >= 2) {
+    G.dayEnded = true;
+    G.newPerkToday = null;
+    statChange('wellness', -5);
+    const dt = document.getElementById('day-done-text');
+    if (dt) dt.textContent = 'the day settles into evening. the street glows a little. you did good today.';
+  }
+  updateUI();
+}
+
+// ═══════════════════════════════════════════════════
+// HOME ACTIONS
+// ═══════════════════════════════════════════════════
+function doHomeAction(action) {
+  if (G.dayEnded || G.actionsUsed >= 2) return;
+
+  if (action === 'rest') {
+    statChange('wellness', 40);
+    setDialogue('🌸 your place', 'you make tea, put on something soft, and let the afternoon happen at its own pace. by the time the light changes you feel like yourself again.');
+    showToast('+40 🌿', 1800);
+  } else if (action === 'book') {
+    statChange('money', 30);
+    statChange('wellness', -8);
+    setDialogue('🌸 your place', 'a booking. it goes well. you deposit the money and treat yourself to something nice from the bakery round the corner.');
+    showToast('+30 💰  −8 🌿', 1800);
+  } else if (action === 'screened') {
+    statChange('money', 50);
+    statChange('wellness', -4);
+    setDialogue('🌸 your place', 'a screened booking — you went in knowing exactly who you were meeting. the work feels lighter when you have the information you deserve to have.');
+    showToast('+50 💰  −4 🌿', 1800);
+  }
+
+  useAction();
+}
+
+function goFight() {
+  if (G.dayEnded || G.actionsUsed >= 2) { showToast("no actions left today."); return; }
+  if (G.wellness <= 40) { showToast("you need wellness >40 to fight. rest first."); return; }
+  openFightModal();
+}
+
+// ═══════════════════════════════════════════════════
+// DAY PROGRESSION
+// ═══════════════════════════════════════════════════
+function advanceDay() {
+  if (G.day >= 10) { showEnding(); return; }
+  G.day++;
+  startNewDay();
+}
+
+function startNewDay() {
+  if (G.day > 10) { showEnding(); return; }
+
+  G.actionsUsed = 0;
+  G.dayEnded = false;
+  G.visitedToday = [];
+
+  // check for building unlocks
+  const arrival = G.buildings.find(b => !b.unlocked && b.perkNeeded <= G.perksWon);
+  if (arrival) {
+    arrival.unlocked = true;
+    const perkForNeighbor = PERKS.find(p => p.neighborId === arrival.id);
+    const line = perkForNeighbor ? perkForNeighbor.neighborLine : (ARRIVAL_LINES[arrival.id] || '✨ a new neighbor has arrived.');
+    document.getElementById('arrival-text').textContent = line;
+    document.getElementById('arrival-banner').classList.add('show');
+  }
+
+  setDialogue('🌸 your place', 'a new day. the street is still here, a little fuller than yesterday. so are you.');
+  updateUI();
+}
+
+// ═══════════════════════════════════════════════════
+// PERK UNLOCK (called after win)
+// ═══════════════════════════════════════════════════
+function unlockPerk() {
+  G.perksWon++;
+  G.newPerkToday = G.perksWon;
+  const perk = PERKS[G.perksWon - 1];
+  statChange('money', 20);
+  updateUI();
+}
+
+// ═══════════════════════════════════════════════════
+// ENDING
+// ═══════════════════════════════════════════════════
+function showEnding() {
+  const perks = G.perksWon;
+  const com = G.community;
+  const well = G.wellness;
+
+  let title, body;
+  if (perks >= 4 && com > 60 && well > 40) {
+    title = 'whoretopia: built';
+    body = 'five fights, five wins. the street is full and lit and humming. marigold\'s coffee is always on. rose has started a second zine. chamomile\'s garden is in bloom. thistle\'s has a waitlist. and the community center — you built that, all of you together. this is what it could look like. you made it look like this.';
+  } else if (perks >= 2 && com > 40) {
+    title = 'your street is alive';
+    body = 'you didn\'t win every fight, but you fought, and the street shows it. there are neighbors now, lights in windows, a noticeboard full of notes. the community you built will carry this forward. that\'s most of it. that might be all of it.';
+  } else if (perks >= 1) {
+    title = 'still standing, still building';
+    body = 'one win. it was real. something changed because you showed up and fought for it. the street is quieter than it could be but it\'s yours, and you\'re still here, which means tomorrow is still possible.';
+  } else {
+    title = 'rest first. the fight continues.';
+    body = 'the fight cost more than expected this time. that happens — the cost is real and the game is honest about it. but you\'re still here, which means the street is still here, which means next time you\'ll know what to spend and what to save. rest. then try again.';
+  }
+
+  const screen = document.getElementById('ending-screen');
+  document.getElementById('ending-title').textContent = title;
+  document.getElementById('ending-body').textContent = body;
+  document.getElementById('ending-stats').textContent =
+    `perks won: ${perks}/5  ·  community: ${Math.round(com)}  ·  wellness: ${Math.round(well)}  ·  money: ${G.money}`;
+
+  // build map
+  const map = document.getElementById('ending-map');
+  map.innerHTML = '';
+  G.buildings.forEach(b => {
+    const div = document.createElement('div');
+    div.className = 'ending-building' + (!b.unlocked ? ' locked' : '');
+    div.textContent = b.emoji;
+    map.appendChild(div);
+  });
+
+  screen.classList.add('show');
+}
+
+function restartGame() {
+  document.getElementById('ending-screen').classList.remove('show');
+  initGame();
+  setDialogue('🌸 your place', 'the morning is yours. pick somewhere to go, or do something at home.');
+  updateUI();
+}
+
+// ═══════════════════════════════════════════════════
+// GALAGA MINIGAME
+// ═══════════════════════════════════════════════════
+const canvas = document.getElementById('game-canvas');
+const ctx = canvas.getContext('2d');
+const W = 480, H = 420;
+
+let game = {
+  running: false,
+  wave: 0,
+  lives: 3,
+  score: 0,
+  player: { x: W/2, y: H - 40, w: 28, h: 28, speed: 4 },
+  bullets: [],
+  enemyBullets: [],
+  enemies: [],
+  particles: [],
+  drops: [],
+  hasShield: false,
+  tripleShot: false,
+  slowActive: false,
+  lastFire: 0,
+  waveComplete: false,
+  frameCount: 0,
+  powerups: { life: false, shield: false, slow: false },
+};
+
+const keys = { left: false, right: false, fire: false };
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowLeft') keys.left = true;
+  if (e.key === 'ArrowRight') keys.right = true;
+  if (e.key === ' ' || e.key === 'ArrowUp') { keys.fire = true; e.preventDefault(); }
+});
+document.addEventListener('keyup', e => {
+  if (e.key === 'ArrowLeft') keys.left = false;
+  if (e.key === 'ArrowRight') keys.right = false;
+  if (e.key === ' ' || e.key === 'ArrowUp') keys.fire = false;
+});
+
+const ENEMY_TYPES = [
+  { em:'👔', hp:1, pts:5,  name:'Lobbyist' },
+  { em:'📜', hp:2, pts:15, name:'FOSTA-SESTA', drops:'shield' },
+  { em:'🏦', hp:1, pts:8,  name:'Payment ban' },
+  { em:'🚔', hp:1, pts:12, name:'Vice cop' },
+  { em:'💰', hp:3, pts:25, name:'Corporate donor' },
+];
+
+// Space Invaders grid state
+let grid = { stepX: 0, stepY: 0, dir: 1, stepTimer: 0, stepInterval: 55 };
+
+function spawnWave() {
+  game.enemies = [];
+  game.bullets = [];
+  game.enemyBullets = [];
+  grid.dir = 1;
+  grid.stepTimer = 0;
+  grid.stepInterval = 55;
+
+  // 2 rows × 6 cols — payment bans on top, lobbyists below
+  const layout = [2, 0];
+  for (let row = 0; row < 2; row++) {
+    const t = ENEMY_TYPES[layout[row]];
+    for (let col = 0; col < 6; col++) {
+      game.enemies.push({ ...t, col, row, x: 48 + col * 66, y: 32 + row * 48, hpLeft: t.hp });
+    }
+  }
+  game.waveComplete = false;
+}
+
+function startFight() {
+  if (G.wellness <= 40) { showToast("you need wellness >40 to fight."); return; }
+  const overlay = document.getElementById('fight-overlay');
+  overlay.style.display = 'none';
+
+  game.running = true;
+  game.wave = 0;
+  game.lives = 3 + (game.powerups.life ? 1 : 0);
+  game.score = 0;
+  game.bullets = [];
+  game.enemyBullets = [];
+  game.particles = [];
+  game.drops = [];
+  game.player.x = W/2;
+  game.hasShield = game.powerups.shield;
+  game.tripleShot = game.powerups.shield;
+  game.slowActive = game.powerups.slow;
+  game.waveComplete = false;
+  game.frameCount = 0;
+  grid.dir = 1; grid.stepTimer = 0; grid.stepInterval = 55;
+
+  spawnWave();
+  requestAnimationFrame(gameLoop);
+}
+
+function resetFightOverlay() {
+  const overlay = document.getElementById('fight-overlay');
+  overlay.style.display = 'flex';
+  overlay.innerHTML = `
+    <h2>⚡ fight the law</h2>
+    <p>clear the wave to win a perk.<br>arrow keys + space to play.</p>
+    <button class="overlay-btn" onclick="startFight()">start fighting</button>`;
+  updateFightStatus();
+}
+
+function updateFightStatus() {
+  document.getElementById('fight-wellness-val').textContent = Math.round(G.wellness);
+  document.getElementById('fight-money-val').textContent = G.money;
+  document.getElementById('fight-lives').textContent = game.lives;
+  document.getElementById('fight-score').textContent = game.score;
+}
+
+let animId;
+function gameLoop() {
+  if (!game.running) return;
+  animId = requestAnimationFrame(gameLoop);
+  update();
+  draw();
+}
+
+function update() {
+  game.frameCount++;
+
+  // player move
+  if (keys.left) game.player.x = Math.max(16, game.player.x - game.player.speed);
+  if (keys.right) game.player.x = Math.min(W - 16, game.player.x + game.player.speed);
+
+  // fire
+  const now = Date.now();
+  if (keys.fire && now - game.lastFire > 220) {
+    game.lastFire = now;
+    if (game.tripleShot) {
+      game.bullets.push({ x: game.player.x - 10, y: game.player.y - 14, vy: -8 });
+      game.bullets.push({ x: game.player.x, y: game.player.y - 14, vy: -8 });
+      game.bullets.push({ x: game.player.x + 10, y: game.player.y - 14, vy: -8 });
+    } else {
+      game.bullets.push({ x: game.player.x, y: game.player.y - 14, vy: -8 });
+    }
+  }
+
+  // bullets
+  game.bullets = game.bullets.filter(b => {
+    b.y += b.vy;
+    return b.y > -10;
+  });
+
+  // Space Invaders grid movement — step on a timer
+  const effectiveInterval = game.slowActive ? grid.stepInterval * 2.5 : grid.stepInterval;
+  grid.stepTimer++;
+  if (grid.stepTimer >= effectiveInterval) {
+    grid.stepTimer = 0;
+    // check if any enemy would go out of bounds
+    let wouldHitEdge = false;
+    game.enemies.forEach(e => {
+      const nx = e.x + grid.dir * 18;
+      if (nx > W - 24 || nx < 24) wouldHitEdge = true;
+    });
+    if (wouldHitEdge) {
+      grid.dir *= -1;
+      game.enemies.forEach(e => { e.y += 18; });
+    } else {
+      game.enemies.forEach(e => { e.x += grid.dir * 18; });
+    }
+  }
+
+  // enemy shoot — slow and bottom-row only (Space Invaders style)
+  if (game.frameCount % 160 === 0 && game.enemies.length > 0) {
+    // find bottom-most enemy in a random column
+    const cols = [...new Set(game.enemies.map(e => Math.round(e.x)))];
+    const col = cols[Math.floor(Math.random() * cols.length)];
+    const inCol = game.enemies.filter(e => Math.round(e.x) === col).sort((a,b) => b.y - a.y);
+    if (inCol.length) {
+      const shooter = inCol[0];
+      game.enemyBullets.push({ x: shooter.x, y: shooter.y + 10, vy: 2.5 });
+    }
+  }
+
+  // enemy bullets
+  game.enemyBullets = game.enemyBullets.filter(b => {
+    b.y += b.vy;
+    // hit player
+    if (Math.abs(b.x - game.player.x) < 16 && Math.abs(b.y - game.player.y) < 16) {
+      if (game.hasShield) { game.hasShield = false; spawnParticles(game.player.x, game.player.y, '#88c8f0', 8); return false; }
+      playerHit();
+      return false;
+    }
+    return b.y < H + 10;
+  });
+
+  // drops
+  game.drops = game.drops.filter(d => {
+    d.y += 1.5;
+    if (Math.abs(d.x - game.player.x) < 18 && Math.abs(d.y - game.player.y) < 18) {
+      game.tripleShot = true;
+      game.hasShield = true;
+      showToast('🛡️ solidarity shield!', 1500);
+      return false;
+    }
+    return d.y < H + 20;
+  });
+
+  // bullet-enemy collision
+  game.bullets.forEach((b, bi) => {
+    game.enemies.forEach((e, ei) => {
+      if (Math.abs(b.x - e.x) < 20 && Math.abs(b.y - e.y) < 20) {
+        e.hpLeft--;
+        spawnParticles(e.x, e.y, '#f8e048', 5);
+        game.bullets.splice(bi, 1);
+        if (e.hpLeft <= 0) {
+          game.score += e.pts;
+          if (e.drops) game.drops.push({ x: e.x, y: e.y, type: e.drops });
+          spawnParticles(e.x, e.y, '#ff7098', 10);
+          game.enemies.splice(ei, 1);
+        }
+      }
+    });
+  });
+
+  // enemy reaches player line
+  game.enemies.forEach(e => {
+    if (e.y > H - 30) {
+      if (!game.hasShield) playerHit();
+      else { game.hasShield = false; spawnParticles(e.x, e.y, '#88c8f0', 8); }
+      e.y = 20 + Math.random() * 40;
+    }
+  });
+
+  // particles
+  game.particles = game.particles.filter(p => {
+    p.x += p.vx; p.y += p.vy; p.life--;
+    return p.life > 0;
+  });
+
+  // wave complete — 1 wave = win
+  if (game.enemies.length === 0 && !game.waveComplete) {
+    game.waveComplete = true;
+    game.wave++;
+    endFight(true);
+  }
+
+  updateFightStatus();
+}
+
+function playerHit() {
+  game.lives--;
+  spawnParticles(game.player.x, game.player.y, '#ff7098', 15);
+  game.player.x = W/2;
+  if (game.lives <= 0) endFight(false);
+}
+
+function spawnParticles(x, y, color, n) {
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * Math.PI * 2;
+    const s = 1 + Math.random() * 3;
+    game.particles.push({ x, y, vx: Math.cos(a)*s, vy: Math.sin(a)*s, color, life: 20 + Math.random()*15, size: 2+Math.random()*3 });
+  }
+}
+
+function endFight(won) {
+  game.running = false;
+  cancelAnimationFrame(animId);
+
+  const overlay = document.getElementById('fight-overlay');
+  overlay.style.display = 'flex';
+
+  if (won) {
+    statChange('wellness', -15);
+    unlockPerk();
+    const perk = PERKS[G.perksWon - 1];
+    const nextNeighbor = G.buildings.find(b => !b.unlocked && b.perkNeeded <= G.perksWon);
+    const neighborLine = perk ? perk.neighborLine : '';
+    overlay.innerHTML = `
+      <h2 style="color:var(--mint);font-size:20px;margin-bottom:6px">⚡ you won.</h2>
+      ${perk ? `
+      <div style="background:rgba(255,255,255,.08);border-radius:12px;padding:12px 14px;margin:0 0 10px;text-align:left;max-width:340px;width:100%">
+        <div style="color:var(--lemon);font-weight:900;font-size:13px;margin-bottom:4px">perk unlocked: ${perk.name}</div>
+        <div style="font-size:12px;color:#bbb;line-height:1.5;margin-bottom:8px">${perk.unlock}</div>
+        <div style="font-size:11px;color:#888;border-top:1px solid rgba(255,255,255,.1);padding-top:8px;line-height:1.4"><strong style="color:#aaa">why this matters:</strong> ${perk.why}</div>
+        <div style="font-size:11px;color:#888;margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,.1)"><strong style="color:#aaa">what was banned:</strong> ${perk.law}</div>
+      </div>
+      ${nextNeighbor ? `
+      <div style="background:rgba(104,216,168,.15);border-radius:12px;padding:10px 14px;margin:0 0 10px;text-align:left;max-width:340px;width:100%;border:1px solid rgba(104,216,168,.3)">
+        <div style="color:var(--mint);font-weight:900;font-size:12px;margin-bottom:4px">✨ opening tomorrow</div>
+        <div style="font-size:12px;color:#ccc;line-height:1.5;margin-bottom:4px;font-style:italic">${perk.neighborLine}</div>
+        <div style="font-size:11px;color:#888;line-height:1.4">${perk.neighborSkill}</div>
+      </div>` : ''}
+      ` : ''}
+      <button class="overlay-btn" onclick="closeFightModal()" style="margin-top:4px">← back to your street</button>`;
+  } else {
+    statChange('wellness', -20);
+    overlay.innerHTML = `
+      <h2 style="color:var(--rose)">you fell</h2>
+      <p>−20 wellness. the fight cost something real.</p>
+      <button class="overlay-btn" onclick="closeFightModal()">← back to your street</button>`;
+  }
+
+  updateUI();
+}
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+
+  // bg
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, '#0c0918');
+  grad.addColorStop(1, '#1a0a2e');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+
+  // stars
+  ctx.fillStyle = 'rgba(255,255,255,.5)';
+  for (let i = 0; i < 40; i++) {
+    const sx = ((i * 73 + game.frameCount * 0.2) % W);
+    const sy = ((i * 47) % (H * 0.7));
+    const ss = (i % 3 === 0) ? 2 : 1;
+    ctx.fillRect(sx, sy, ss, ss);
+  }
+
+  // drops
+  game.drops.forEach(d => {
+    ctx.font = '20px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('🛡️', d.x, d.y);
+  });
+
+  // enemies
+  game.enemies.forEach(e => {
+    ctx.font = '22px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(e.em, e.x, e.y + 8);
+    // hp bar
+    if (e.hpLeft < e.hp) {
+      ctx.fillStyle = 'rgba(255,112,152,.5)';
+      ctx.fillRect(e.x - 12, e.y - 16, 24, 4);
+      ctx.fillStyle = '#68d8a8';
+      ctx.fillRect(e.x - 12, e.y - 16, 24 * (e.hpLeft / e.hp), 4);
+    }
+  });
+
+  // bullets
+  game.bullets.forEach(b => {
+    ctx.fillStyle = '#f8e048';
+    ctx.beginPath();
+    ctx.ellipse(b.x, b.y, 3, 6, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // glow
+    ctx.fillStyle = 'rgba(248,224,72,.3)';
+    ctx.beginPath();
+    ctx.ellipse(b.x, b.y, 6, 10, 0, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  // enemy bullets
+  game.enemyBullets.forEach(b => {
+    ctx.fillStyle = '#ff7098';
+    ctx.beginPath();
+    ctx.ellipse(b.x, b.y, 3, 5, 0, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  // player
+  const px = game.player.x, py = game.player.y;
+  if (game.hasShield) {
+    ctx.strokeStyle = '#88c8f0';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(px, py, 20, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(136,200,240,.3)';
+    ctx.lineWidth = 6;
+    ctx.beginPath();
+    ctx.arc(px, py, 22, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  ctx.font = '26px serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('🌸', px, py + 9);
+
+  // lives
+  ctx.font = '16px serif';
+  ctx.textAlign = 'left';
+  for (let i = 0; i < game.lives; i++) ctx.fillText('❤️', 10 + i * 22, 22);
+
+  // particles
+  game.particles.forEach(p => {
+    ctx.globalAlpha = p.life / 35;
+    ctx.fillStyle = p.color;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    ctx.fill();
+  });
+  ctx.globalAlpha = 1;
+
+  // score
+  ctx.font = 'bold 14px Nunito';
+  ctx.fillStyle = 'rgba(248,224,72,.9)';
+  ctx.textAlign = 'right';
+  ctx.fillText('⭐ ' + game.score, W - 10, 22);
+}
+
+// ═══════════════════════════════════════════════════
+// POWERUPS SHOP
+// ═══════════════════════════════════════════════════
+function buyPowerup(type) {
+  const costs = { life: 25, shield: 30, slow: 35, wellness: 20 };
+  const cost = costs[type];
+  if (G.money < cost) { showToast("not enough money."); return; }
+  statChange('money', -cost);
+  if (type === 'wellness') {
+    statChange('wellness', 20);
+    showToast('+20 🌿 wellness restored', 2000);
+  } else {
+    game.powerups[type] = true;
+    const names = { life: '❤️ extra life', shield: '🛡️ solidarity shield', slow: '🐢 slow enemies' };
+    showToast(names[type] + ' ready for next fight', 2000);
+  }
+  updateUI();
+}
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+updateUI();
+</script>
+</body>
+</html>
