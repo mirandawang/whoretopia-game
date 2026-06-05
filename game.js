@@ -195,21 +195,17 @@ function updateUI() {
   if (fmv) fmv.textContent = G.money;
 
   // day header
-  document.getElementById('day-title').textContent = 'day ' + G.day + ' of 10';
+  document.getElementById('day-number-img').src = 'img/days/' + G.day + '.PNG';
 
-  // day dots
-  const dots = document.getElementById('day-dots');
-  dots.innerHTML = '';
-  for (let i = 1; i <= 10; i++) {
-    const d = document.createElement('div');
-    d.className = 'day-dot' + (i < G.day ? ' done' : i === G.day ? ' current' : '');
-    d.textContent = i;
-    dots.appendChild(d);
-  }
-
-  // actions counter
+  // actions counter pips
   const left = Math.max(0, 2 - G.actionsUsed);
-  document.getElementById('actions-left').textContent = left;
+  const pips = document.getElementById('actions-pips');
+  pips.innerHTML = '';
+  for (let i = 0; i < 2; i++) {
+    const p = document.createElement('div');
+    p.className = 'action-pip' + (i < left ? ' filled' : '');
+    pips.appendChild(p);
+  }
 
   // buildings grid
   renderBuildings();
@@ -557,7 +553,7 @@ let game = {
   wave: 0,
   lives: 3,
   score: 0,
-  player: { x: W/2, y: H - 40, w: 28, h: 28, speed: 4 },
+  player: { x: W/2, y: H - 40, w: 28, h: 28, speed: 14 },
   bullets: [],
   enemyBullets: [],
   enemies: [],
@@ -595,7 +591,7 @@ const ENEMY_TYPES = [
 ];
 
 // Space Invaders grid state
-let grid = { dir: 1, stepTimer: 0, stepInterval: 45 };
+let grid = { dir: 1, stepTimer: 0, stepInterval: 18 };
 
 function spawnWave() {
   game.enemies = [];
@@ -703,11 +699,11 @@ function update() {
   if (keys.fire && now - game.lastFire > 220) {
     game.lastFire = now;
     if (game.tripleShot) {
-      game.bullets.push({ x: game.player.x - 10, y: game.player.y - 14, vy: -8 });
-      game.bullets.push({ x: game.player.x, y: game.player.y - 14, vy: -8 });
-      game.bullets.push({ x: game.player.x + 10, y: game.player.y - 14, vy: -8 });
+      game.bullets.push({ x: game.player.x - 10, y: game.player.y - 14, vy: -13 });
+      game.bullets.push({ x: game.player.x, y: game.player.y - 14, vy: -13 });
+      game.bullets.push({ x: game.player.x + 10, y: game.player.y - 14, vy: -13 });
     } else {
-      game.bullets.push({ x: game.player.x, y: game.player.y - 14, vy: -8 });
+      game.bullets.push({ x: game.player.x, y: game.player.y - 14, vy: -13 });
     }
   }
 
@@ -731,7 +727,7 @@ function update() {
       grid.dir *= -1;
       game.enemies.forEach(e => { e.y += 16; });
       // speed up as enemies are destroyed
-      grid.stepInterval = Math.max(18, 45 - (18 - game.enemies.length) * 1.5);
+      grid.stepInterval = Math.max(6, 18 - (18 - game.enemies.length) * 0.8);
     } else {
       game.enemies.forEach(e => { e.x += grid.dir * 16; });
     }
@@ -743,7 +739,7 @@ function update() {
     const col = cols[Math.floor(Math.random() * cols.length)];
     const inCol = game.enemies.filter(e => e.col === col).sort((a, b) => b.y - a.y);
     if (inCol.length) {
-      game.enemyBullets.push({ x: inCol[0].x, y: inCol[0].y + 10, vy: 3.0 });
+      game.enemyBullets.push({ x: inCol[0].x, y: inCol[0].y + 10, vy: 5.0 });
     }
   }
 

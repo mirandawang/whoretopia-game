@@ -323,26 +323,39 @@ h1, h2, h3, .chunky {
   text-align: center;
   margin-bottom: 10px;
 }
-#day-header h2 { font-size: 22px; color: var(--rose-dark); }
+#day-title {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  margin-bottom: 20px;
+  background: #fff;
+  border-radius: var(--radius-sm);
+  padding-top: 30px;
+  padding-bottom: 30px;
+  padding-right: 10px;
+}
+#day-title-inner {
+  position: relative;
+  width: 72%;
+  margin: 0 auto;
+}
+#day-title-bg {
+  width: 100%;
+  display: block;
+}
+#day-number-img {
+  position: absolute;
+  left: 39%;
+  top: 25%;
+  transform: translate(-50%, -50%);
+  height: 75%;
+  width: auto;
+}
 #day-header .subtitle { font-size: 12px; color: #888; margin-top: 2px; }
-#day-tracker {
+#actions-counter {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: #fff;
-  border-radius: var(--radius-sm);
-  padding: 8px 12px;
-  width: 100%;
-  max-width: 320px;
-  margin: 10px 0 6px;
-  font-family: 'Nunito', sans-serif;
-  font-weight: 800;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: .06em;
-  color: #aaa;
-}
-#actions-counter {
   font-family: 'Nunito', sans-serif;
   font-weight: 800;
   font-size: 11px;
@@ -354,29 +367,19 @@ h1, h2, h3, .chunky {
   margin: 0 0 4px;
   padding: 0 12px;
 }
-#actions-counter .count { color: var(--rose-dark); }
-#day-dots { display: flex; gap: 4px; align-items: center; }
-.day-dot {
-  width: 16px; height: 16px;
+.actions-label { flex-shrink: 0; }
+#actions-pips { display: flex; gap: 6px; align-items: center; }
+.action-pip {
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   background: #eee;
   border: 2px solid #ddd;
-  transition: background .3s, transform .3s;
-  font-family: 'Nunito', sans-serif;
-  font-weight: 900;
-  font-size: 9px;
-  color: rgba(0,0,0,.35);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
+  transition: background .25s, border-color .25s;
 }
-.day-dot.done { background: var(--rose); border-color: var(--rose-dark); color: #fff; }
-.day-dot.current {
-  background: var(--lemon);
-  border-color: #c8a000;
-  color: #7a5a00;
-  transform: scale(1.25);
+.action-pip.filled {
+  background: var(--rose);
+  border-color: var(--rose-dark);
 }
 
 /* ── TOWN MAP ── */
@@ -1196,11 +1199,9 @@ h1, h2, h3, .chunky {
   .stat-bar-wrap { height: 6px; }
 
   /* roomier day header */
-  #day-header h2 { font-size: 28px; }
+  #day-title { max-width: 380px; }
   #day-header .subtitle { font-size: 13px; margin-top: 4px; }
-  #day-tracker { max-width: 380px; padding: 10px 16px; margin: 10px 0 6px; }
   #actions-counter { max-width: 380px; }
-  .day-dot { width: 18px; height: 18px; font-size: 10px; }
 
   /* main column polish */
   #town-map-title { text-align: left; font-size: 13px; margin-bottom: 8px; }
