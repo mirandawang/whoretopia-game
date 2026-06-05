@@ -569,6 +569,7 @@ let game = {
   lastFire: 0,
   waveComplete: false,
   frameCount: 0,
+  invincible: 0,
   powerups: { life: false, shield: false, triple: false, slow: false },
 };
 
@@ -594,7 +595,7 @@ const ENEMY_TYPES = [
 ];
 
 // Space Invaders grid state
-let grid = { stepX: 0, stepY: 0, dir: 1, stepTimer: 0, stepInterval: 55 };
+let grid = { dir: 1, stepTimer: 0, stepInterval: 45 };
 
 function spawnWave() {
   game.enemies = [];
@@ -602,14 +603,14 @@ function spawnWave() {
   game.enemyBullets = [];
   grid.dir = 1;
   grid.stepTimer = 0;
-  grid.stepInterval = 55;
+  grid.stepInterval = 45;
 
-  // 2 rows × 6 cols — payment bans on top, lobbyists below
-  const layout = [2, 0];
-  for (let row = 0; row < 2; row++) {
-    const t = ENEMY_TYPES[layout[row]];
+  // 3 rows × 6 cols: FOSTA-SESTA top, Vice cops middle, Lobbyists bottom
+  const rowTypes = [1, 3, 0];
+  for (let row = 0; row < 3; row++) {
+    const t = ENEMY_TYPES[rowTypes[row]];
     for (let col = 0; col < 6; col++) {
-      game.enemies.push({ ...t, col, row, x: 48 + col * 66, y: 32 + row * 48, hpLeft: t.hp });
+      game.enemies.push({ ...t, col, row, x: 45 + col * 66, y: 30 + row * 50, hpLeft: t.hp });
     }
   }
   game.waveComplete = false;
@@ -635,7 +636,8 @@ function startFight() {
   game.slowActive = game.powerups.slow;
   game.waveComplete = false;
   game.frameCount = 0;
-  grid.dir = 1; grid.stepTimer = 0; grid.stepInterval = 55;
+  game.invincible = 0;
+  grid.dir = 1; grid.stepTimer = 0; grid.stepInterval = 45;
 
   spawnWave();
   requestAnimationFrame(gameLoop);
@@ -690,6 +692,7 @@ function gameLoop() {
 
 function update() {
   game.frameCount++;
+  if (game.invincible > 0) game.invincible--;
 
   // player move
   if (keys.left) game.player.x = Math.max(16, game.player.x - game.player.speed);
@@ -714,34 +717,33 @@ function update() {
     return b.y > -10;
   });
 
-  // Space Invaders grid movement — step on a timer
+  // Space Invaders grid movement
   const effectiveInterval = game.slowActive ? grid.stepInterval * 2.5 : grid.stepInterval;
   grid.stepTimer++;
   if (grid.stepTimer >= effectiveInterval) {
     grid.stepTimer = 0;
-    // check if any enemy would go out of bounds
     let wouldHitEdge = false;
     game.enemies.forEach(e => {
-      const nx = e.x + grid.dir * 18;
-      if (nx > W - 24 || nx < 24) wouldHitEdge = true;
+      const nx = e.x + grid.dir * 16;
+      if (nx > W - 20 || nx < 20) wouldHitEdge = true;
     });
     if (wouldHitEdge) {
       grid.dir *= -1;
-      game.enemies.forEach(e => { e.y += 18; });
+      game.enemies.forEach(e => { e.y += 16; });
+      // speed up as enemies are destroyed
+      grid.stepInterval = Math.max(18, 45 - (18 - game.enemies.length) * 1.5);
     } else {
-      game.enemies.forEach(e => { e.x += grid.dir * 18; });
+      game.enemies.forEach(e => { e.x += grid.dir * 16; });
     }
   }
 
-  // enemy shoot — slow and bottom-row only (Space Invaders style)
-  if (game.frameCount % 160 === 0 && game.enemies.length > 0) {
-    // find bottom-most enemy in a random column
-    const cols = [...new Set(game.enemies.map(e => Math.round(e.x)))];
+  // enemy shoot — bottom row of each column
+  if (game.frameCount % 110 === 0 && game.enemies.length > 0) {
+    const cols = [...new Set(game.enemies.map(e => e.col))];
     const col = cols[Math.floor(Math.random() * cols.length)];
-    const inCol = game.enemies.filter(e => Math.round(e.x) === col).sort((a,b) => b.y - a.y);
+    const inCol = game.enemies.filter(e => e.col === col).sort((a, b) => b.y - a.y);
     if (inCol.length) {
-      const shooter = inCol[0];
-      game.enemyBullets.push({ x: shooter.x, y: shooter.y + 10, vy: 2.5 });
+      game.enemyBullets.push({ x: inCol[0].x, y: inCol[0].y + 10, vy: 3.0 });
     }
   }
 
@@ -788,8 +790,8 @@ function update() {
   // enemy reaches player line
   game.enemies.forEach(e => {
     if (e.y > H - 30) {
-      if (!game.hasShield) playerHit();
-      else { game.hasShield = false; spawnParticles(e.x, e.y, '#88c8f0', 8); }
+      if (game.hasShield) { game.hasShield = false; spawnParticles(e.x, e.y, '#88c8f0', 8); }
+      else playerHit();
       e.y = 20 + Math.random() * 40;
     }
   });
@@ -811,7 +813,9 @@ function update() {
 }
 
 function playerHit() {
+  if (game.invincible > 0) return;
   game.lives--;
+  game.invincible = 90;
   spawnParticles(game.player.x, game.player.y, '#ff7098', 15);
   game.player.x = W/2;
   if (game.lives <= 0) endFight(false);
