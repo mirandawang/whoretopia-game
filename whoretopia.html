@@ -12,16 +12,17 @@
 <!-- INTRO SCREEN -->
 <div id="intro-screen" class="show">
   <div id="intro-card">
-    <div id="intro-emoji">🌸🏘️🌿</div>
-    <h1 id="intro-title">whoretopia</h1>
+    <img id="intro-logo" src="img/whoretopia-logo.png" alt="whoretopia">
     <p id="intro-tagline">a small game about whores, community, and the fight.</p>
     <div id="intro-body">
-      <p>welcome to your cozy street. you're a sex worker making your living. you do the work and you're good at it. but the laws are stacked against you: shut-down screening platforms, frozen payment accounts, criminalizing safety chats between workers. this game asks what if we can fight back and build our own communities?</p>
+      <p>welcome to your cozy street. you're a sex worker making your living. you like what you do and you're building your life, but the laws are stacked against you: FOSTA-SESTA shut-down screening platforms, frozen payment accounts, criminalizing safety chats between workers. this game asks what if we can fight back and build our own communities?</p>
       <p>over <strong>10 days</strong>, you'll rest, take bookings, visit your lovely neighbors, and <strong>fight the law</strong> with solidarity and wellness. </p>
       <p>every win unlocks a perk, more safety, and a new neighbor moves in. by day 10, your street could look like a whoretopia. soft. sexy. built by workers.</p>
       <p class="intro-note">this is what it could look like. let's build it together!</p>
     </div>
-    <button id="intro-start-btn" onclick="startGame()">start your whoretopia story →</button>
+    <button id="intro-start-btn" onclick="startGame()">
+      <img src="img/start-your-story.png" alt="start your whoretopia story →">
+    </button>
   </div>
 </div>
 
@@ -33,9 +34,9 @@
       <span class="day-tracker-label">your story:</span>
       <div id="day-dots"></div>
     </div>
+    <div id="actions-counter">actions left: <span class="count" id="actions-left">2</span></div>
   </div>
 
-  <div id="arrival-banner"><button class="banner-close" onclick="this.parentElement.classList.remove('show')">✕</button><span id="arrival-text"></span></div>
   <div id="perk-banner"><button class="banner-close" onclick="this.parentElement.classList.remove('show')">✕</button><span id="perk-text"></span></div>
 
   <div id="stats-bar">
@@ -64,26 +65,25 @@
     </div>
   </div>
 
-  <div id="actions-counter">actions left today: <span class="count" id="actions-left">2</span></div>
-
-  <div id="town-map-header">
-    <h3 id="town-map-title">your street map</h3>
-    <p id="town-map-hint">click a neighbor to visit ↓</p>
-  </div>
-  <div id="town-map">
-    <div id="buildings-grid"></div>
+  <!-- day-done card appears when both actions used -->
+  <div id="day-done-card">
+    <p id="day-done-text">the day settles into evening. the street glows and it was a good day. time for bed?</p>
+    <button id="day-done-btn" onclick="advanceDay()">start day 2 →</button>
   </div>
 
   <!-- dialogue always visible -->
   <div id="dialogue-box">
-    <div id="dialogue-speaker" style="display:none"></div>
-    <div id="dialogue-text">the morning is yours. pick something to do.</div>
+    <div id="dialogue-content">
+      <div id="dialogue-speaker" style="display:none"></div>
+      <div id="dialogue-text">the morning is yours. pick something to do.</div>
+    </div>
+    <img id="dialogue-portrait" src="" alt="">
   </div>
 
-  <!-- day-done card appears below dialogue when both actions used -->
-  <div id="day-done-card">
-    <p id="day-done-text">the day settles into evening. the street glows. someone's playing music two doors down. you did good today, and you're proud.</p>
-    <button id="day-done-btn" onclick="advanceDay()">start day 2 →</button>
+  <h3 id="town-map-title">your street map</h3>
+  <div id="town-map">
+    <img id="map-bg" src="img/map.png" alt="" onerror="this.style.display='none'">
+    <div id="buildings-grid"></div>
   </div>
 
   <div id="action-section">
@@ -100,6 +100,9 @@
         ✅ screened booking <span class="cost">+50 💰 −10 wellness</span>
       </button>
     </div>
+    <h3 id="action-section-title">your neighbors</h3>
+    <p id="action-section-hint">click a neighbor to visit ↓</p>
+    <div id="neighbor-menu"></div>
   </div>
 
   <div id="perks-section">
@@ -111,6 +114,16 @@
     </button>
   </div>
 
+</div>
+
+<!-- ARRIVAL MODAL -->
+<div id="arrival-modal">
+  <div id="arrival-modal-inner">
+    <h2 id="arrival-modal-title"></h2>
+    <div class="arrival-images" id="arrival-modal-images"></div>
+    <p id="arrival-modal-text"></p>
+    <button id="arrival-modal-btn" onclick="closeArrivalModal()">welcome to the street! →</button>
+  </div>
 </div>
 
 <!-- FIGHT MODAL -->
@@ -143,16 +156,16 @@
   <div id="ending-card">
     <p id="ending-eyebrow">after 10 days...</p>
     <h2 class="chunky" id="ending-title"></h2>
+    <p id="ending-body"></p>
     <div id="ending-map"></div>
+    <div id="recap-neighbors"></div>
     <div id="ending-recap">
       <h3 class="recap-title">⭐ what you built ⭐</h3>
       <div id="recap-statgrid"></div>
       <div id="recap-perks"></div>
-      <div id="recap-neighbors"></div>
     </div>
-    <p id="ending-body"></p>
     <p class="closing-line">"this is what it could look like."</p>
-    <p id="ending-edu">in real life, <strong>FOSTA-SESTA</strong> passed in 2018 and hasn't been repealed. workers are still organizing — for repeal, for full decriminalization, for a street like this one. support your local sex worker collective.</p>
+    <p id="ending-edu">in real life, <strong>FOSTA-SESTA</strong> passed in 2018 and hasn't been repealed. workers are still organizing for full decriminalization, for a street and whoretopia like this one. support your local sex worker collective.</p>
     <button id="ending-close" onclick="restartGame()">play again</button>
     <button id="ending-back" onclick="restartGame()">← back to town</button>
   </div>

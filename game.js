@@ -2,24 +2,24 @@
 // GAME STATE
 // ═══════════════════════════════════════════════════
 const BUILDINGS = [
-  { id:'home',      name:'your place',   emoji:'🏠', accent:'#ff7098', unlocked:true,  perkNeeded:0 },
-  { id:'marigold',  name:"marigold's",   emoji:'🌼', accent:'#f8e048', unlocked:true,  perkNeeded:0 },
-  { id:'rose',      name:"rose's",       emoji:'🌹', accent:'#ffa878', unlocked:false, perkNeeded:1 },
-  { id:'clover',    name:"clover's legal aid",     emoji:'⚖️', accent:'#68d8a8', unlocked:false, perkNeeded:2 },
-  { id:'chamomile', name:"chamomile's health clinic",  emoji:'🏥', accent:'#ffa878', unlocked:false, perkNeeded:3 },
-  { id:'thistle',   name:"thistle's bdsm dungeon",    emoji:'🔗', accent:'#c8b8f8', unlocked:false, perkNeeded:4 },
-  { id:'center',    name:'community center', emoji:'🏛️', accent:'#88c8f0', unlocked:false, perkNeeded:5 },
+  { id:'home',      name:'your place',              emoji:'🏠', accent:'#ff7098', unlocked:true,  perkNeeded:0, mapX:10, mapY:75 },
+  { id:'marigold',  name:"marigold's",              emoji:'🌼', accent:'#f8e048', unlocked:true,  perkNeeded:0, mapX:24, mapY:72 },
+  { id:'rose',      name:"rose's",                  emoji:'🌹', accent:'#ffa878', unlocked:false, perkNeeded:1, mapX:37, mapY:75 },
+  { id:'clover',    name:"clover's legal aid",      emoji:'⚖️', accent:'#68d8a8', unlocked:false, perkNeeded:2, mapX:50, mapY:70 },
+  { id:'chamomile', name:"chamomile's",             emoji:'🏥', accent:'#ffa878', unlocked:false, perkNeeded:3, mapX:63, mapY:75 },
+  { id:'thistle',   name:"thistle's",               emoji:'🔗', accent:'#c8b8f8', unlocked:false, perkNeeded:4, mapX:76, mapY:72 },
+  { id:'center',    name:'community center',        emoji:'🏛️', accent:'#88c8f0', unlocked:false, perkNeeded:5, mapX:88, mapY:75 },
 ];
 
 const PERKS = [
   {
     id:1, name:'screened booking',
     law:'FOSTA-SESTA shut down client screening platforms like Backpage, P411, and MyRedBook',
-    why:'screening lets workers vet clients before meeting them. it\'s one of the most direct safety tools we have. without it, every booking is a leap of faith. with it, you can wear the sheer slip and mean it.',
-    unlock:'your booking page now lets you screen clients before confirming. you walk into sessions knowing exactly who you\'re meeting. the lightness is immediate.',
+    why:'screening lets workers vet clients before meeting them. it\'s one of the most direct safety tools we have. without it, every booking is a leap of faith. with it, you can feel safer before you even start.',
+    unlock:'your booking page now lets you screen clients before confirming. you walk into sessions knowing exactly who you\'re meeting, and it makes everything feel lighter.',
     neighborId:'rose', neighborName:"rose's",
     neighborSkill:'rose is new to the industry but a veteran community organizer and zine-maker. she\'s been quietly building safety networks for years. and now she can do it openly.',
-    neighborLine:"🌹 rose moves in next door. 'i've been waiting for this chance,' she says, and starts pinning things to the wall before she's even unpacked.",
+    neighborLine:"🌹 rose moves in next door. 'i've been waiting for this chance,' she says with excitement, and starts pinning posters to the wall before she's even unpacked.",
   },
   {
     id:2, name:'safety registry',
@@ -33,78 +33,78 @@ const PERKS = [
   {
     id:3, name:'worker-owned payment',
     law:'PayPal, Stripe, Venmo and most major payment processors ban sex workers in their terms of service. Accounts are frozen without warning, often with no appeal',
-    why:'losing payment access doesn\'t just mean lost income. it means losing savings, losing the ability to pay rent, losing financial history. it happens overnight with no recourse. fixing this fixes a lot.',
-    unlock:'a worker-owned payment co-op is now running on the street. no frozen accounts, no arbitrary bans, no explaining yourself to an algorithm.',
+    why:'losing payment access means lost income, lost savings, losing the ability to pay rent, losing financial history, and more. it happens overnight with no recourse and no explanations.',
+    unlock:'a worker-owned payment co-op is now running on the street. no frozen accounts, no arbitrary bans, no explaining yourself to a corporation who doesn\'t care and never did.',
     neighborId:'chamomile', neighborName:"chamomile's",
-    neighborSkill:'chamomile is a nurse and harm reduction specialist. she opened her clinic because she\'d seen too many people unable to access care safely. her bedside manner is unmatched.',
+    neighborSkill:'chamomile is a nurse and harm reduction specialist. she opened her clinic because she\'d seen too many people unable to access care safely. her bedside manner is the sweetest, and she gives out her lollies freely.',
     neighborLine:"🏥 chamomile's clinic opens. there\'s a plant by the door and a handwritten note: walk-ins welcome.",
   },
   {
     id:4, name:'secure hosting',
-    law:'a CDA 230 carve-out lets platforms remove content and accounts related to sex work preemptively. this led to websites, forums, and hosting providers deplatforming workers without notice or appeal',
-    why:'losing your online presence means losing income, losing community connections, and losing years of work. secure and legal hosting changes what\'s possible.',
-    unlock:'the street has its own hosting infrastructure now. no platform can take it down. your online presence is yours, glitter and all.',
+    law:'a CDA 230 carve-out (FOSTA-SESTA) lets platforms remove content and accounts related in any way to sex or sex work preemptively. this led to websites, forums, and hosting providers deplatforming workers without notice or appeal',
+    why:'the internet is a big ecosystem these days especially for businesses and individuals. losing your online presence means losing income, losing community connections, and losing years of work. secure and legal hosting changes what\'s possible.',
+    unlock:'the street has its own hosting infrastructure now. no platform can take it down. you can make your own website with no fear of losing it all.',
     neighborId:'thistle', neighborName:"thistle's",
-    neighborSkill:"thistle runs a worker-owned BDSM space. It's professional, safe, and built entirely around the workers who use it. she knows what it means to build something nobody can take from you.",
-    neighborLine:"🔗 thistle opens the doors. the music is already on, the candles already lit. 'come in,' she says. 'this place is ours.'",
+    neighborSkill:"thistle runs a worker-owned BDSM space. It's professional, safe, and built entirely around the workers who use it. they know what it means to build something nobody can take from you.",
+    neighborLine:"🔗 thistle opens the doors and you can hear that the music is already on. 'come in,' they say. 'this place is ours. and we\'re gonna make it fun.'",
   },
   {
-    id:5, name:'decrim status',
+    id:5, name:'decriminalization status',
     law:'full decriminalization of sex work, where selling and buying are both legal, and no criminal penalties for workers, does not exist in most of the world',
-    why:'decrim doesn\'t make the work glamorous or fix everything. it removes the threat of arrest, the pressure to work in unsafe conditions, and the legal walls between you and housing, banking, healthcare. it makes the work survivable. it makes it yours.',
+    why:'decrim doesn\'t fix everything. but it removes the threat of arrest, the pressure to work in unsafe conditions, and the legal walls between you and housing, banking, healthcare. it makes it possible to live and it makes it yours.',
     unlock:'decrim is in effect on this street. every action costs a little less. wellness gains +10 everywhere, because safety changes what work feels like.',
     neighborId:'center', neighborName:'the community center',
-    neighborSkill:"the community center is built by everyone on the street, together. it belongs to all of them. it's the proof that this works.",
-    neighborLine:"🏛️ the community center is finished. someone has put flowers on the steps. the lights are on inside. someone's playing music. you can hear laughter.",
+    neighborSkill:"the community center is built by everyone on the street, together. in solidarity we fight and in friendship we laugh and we play.",
+    neighborLine:"🏛️ the community center is finished. someone has put flowers on the steps. the lights are on inside and music is flowing onto the street. a big banner on the entrance says 'WELCOME TO OUR WHORETOPIA' in rainbow glitter puffy paint.",
   },
 ];
 
 const ARRIVAL_LINES = {
-  rose:      "🌹 rose arrives carrying a potted fern, a stack of zines, and lipstick the same shade as her sweater. 'i brought snacks too,' she winks, patting her tote.",
-  clover:    "⚖️ clover hangs a little sign in her window. it's hand-lettered, slightly crooked, and full of bite. LEGAL AID. WE'LL FIGURE IT OUT, BABE.",
-  chamomile: "🏥 chamomile's door opens with a little bell and the smell of something herbal. a plant sits on the step, freshly watered, sweet as her bedside manner.",
+  rose:      "🌹 rose arrives carrying a stack of zines, and wearing lipstick the same shade as her sweater. 'i brought snacks too,' she says as she winks and pats her overstuffed tote.",
+  clover:    "⚖️ clover hangs a little sign in her window. it's hand-lettered, imperfect, and full of bite. LEGAL AID. WE'LL FIGURE IT OUT, BABE.",
+  chamomile: "🏥 chamomile's door opens with a little jingle of a bell. the fragrance of the herbs and flowers drift through the air, smelling sweet like her bedside manner.",
   thistle:   "🔗 thistle flips the sign to OPEN, lights a candle, and turns up the music. the street just got a lot more interesting.",
   center:    "🏛️ the community center is finished. someone has put flowers on the steps and pinned a glittery banner above the door.",
 };
 
 const NEIGHBOR_EVENTS = {
   marigold: [
-    { text:"the coffee is ready before you even sit down. you end up talking for two hours about everything. clients, gossip, who's good with their hands, the one who shows up every wednesday with the same bad haircut. the light shifts. neither of you ever put on real pants. you needed this more than you knew.", wellness:+20, community:+10 },
-    { text:"marigold pulls out an old photo album. there are pictures of fellow workers who used to live on this street, who laughed, who built things that lasted. 'look how many of us there were,' she says, melancholically.", wellness:+18, community:+15 },
-    { text:"you help her repot a trailing plant that's taken over an entire shelf. soil everywhere. she's wearing pearls to garden in, because of course she is. there's a smudge of dirt on her collarbone and you almost reach to brush it off. you don't. you both end up laughing instead.", wellness:+22, community:+8 },
-    { text:"she makes tea and puts on an old record and you both sit in the good kind of quiet. she lends you her cashmere cardigan when the breeze comes through. it smells like her perfume. you leave still wearing it.", wellness:+25, community:+10 },
-    { text:"marigold is teaching herself to bake sourdough. it is not going well, but the kitchen smells incredible and she's wearing a frilly apron she calls her seduction apron. you taste a slightly lopsided slice and it is perfect.", wellness:+20, community:+12 },
+    { text:"the aroma of freshly ground beans draws you in, the caffeine hits and... you end up talking for two hours about EVERYTHING. clients, gossip, who's good with their hands, the one who shows up every wednesday with the same bad haircut. the light shifts. you needed this more than you knew.", wellness:+20, community:+10 },
+    { text:"marigold pulls out an old photo album. there are pictures of fellow friends and workers who used to live on this street, who laughed and built what they loved. 'look at how many of us there were,' she says, sighing in a way that felt both wishful and melancholic.", wellness:+18, community:+15 },
+    { text:"you help her repot a trailing plant that's taken over an entire shelf. there's soil spilling everywhere. she's wearing pearls to garden in and there's a smudge of dirt on her collarbone. you make awkward eye contact and you both end up laughing until you can\'t breathe.", wellness:+22, community:+8 },
+    { text:"she\'s brewing coffee - decaf - and puts on an old record. you both sit together in the good kind of quiet. she lends you her cardigan when the breeze comes through. it smells like her perfume. you leave still wearing it.", wellness:+25, community:+10 },
+    { text:"marigold is teaching herself to bake sourdough. it is a mess, flour everywhere, but the kitchen smells incredible and she's wearing a frilly apron that she calls her seduction apron. you taste a slightly lopsided slice and it is so fresh and so perfect.", wellness:+20, community:+12 },
   ],
   rose: [
-    { text:"rose is illustrating a new zine about safety and pleasure and the right to both. she wants your opinion on the cover. it's beautiful. there's a hand-drawn body on the front and you can't stop staring. you tell her so and mean it.", wellness:+12, community:+18 },
-    { text:"she has covered her entire community board in sticky notes. resources, warmth, a little drawing of a cat in a tiny corset. you add something and feel immediately at home.", wellness:+10, community:+20 },
-    { text:"rose found a new bdsm forum and has already decorated her profile with pixel flowers and a tiny heart border. she sends you the link and you bookmark it instantly.", wellness:+15, community:+15 },
-    { text:"you make dinner together. on the menu is pasta, too much garlic, a bottle of wine. you eat in your fishnets and your slippers. her hand brushes yours over the salt and neither of you mentions it. it's the kind of evening that makes everything feel possible.", wellness:+18, community:+16 },
+    { text:"rose is illustrating a new zine about safety and pleasure and the right to both. she wants your opinion on the cover. it's beautiful. there's a hand-drawn body on the front and you can't stop staring. you tell her so and you can see the sparkles in her eyes.", wellness:+12, community:+18 },
+    { text:"she welcomes you in enthusiastically and shows you her newest addition to her home. \"A community board for visitors!\" she explains. it has been covered in sticky notes. resources, warmth, a little drawing of a cat in a tiny corset. you add something and feel immediately at home.", wellness:+10, community:+20 },
+    { text:"rose found a new bdsm forum and has already decorated her profile with pixel flowers and a tiny heart border. she's almost too excited to show you, but it's cute. she sends you the link and you bookmark it instantly.", wellness:+15, community:+15 },
+    { text:"\"oh hey!\" rose greets you, \"this is perfect. i just finished.\". she kindly shares her meal with you after your long day. on the menu is pasta, with too much garlic, and a bottle of riesling. you eat in your fishnets and your slippers. it's the kind of evening that makes everything feel ok again.", wellness:+18, community:+16 },
   ],
   clover: [
-    { text:"clover sketches out what decrim would look like on your street, practically, day to day. she draws diagrams. you leave with notes and a head full of possibility.", wellness:+15, community:+15 },
-    { text:"she tells you about a housing win this week, careful with details but beaming. 'the system is clunky but we found a door,' she says, kicking off her heels under the table and sipping who-knows-what out of a coffee mug.", wellness:+12, community:+18 },
-    { text:"you bring her a sticky situation you weren't sure how to handle. she listens, thinks, and offers three useful ideas. 'you've got this babe,' she says as you leave. you believe her.", wellness:+20, community:+12 },
-    { text:"clover is writing a policy brief and lets you read a section. it's sharp and warm and funnier than legal writing has any right to be. you didn't know it could be like this.", wellness:+10, community:+20 },
+    { text:"clover sketches out what decriminalization would look like on your street, practically, day to day. she draws diagrams. you leave with notes and a head full of possibility.", wellness:+15, community:+15 },
+    { text:"she tells you about a housing win this week, careful with details but beaming. 'the system fucking sucks but we found a way,' she says, kicking off her heels under the table and sipping who-knows-what out of a coffee mug.", wellness:+12, community:+18 },
+    { text:"you bring her a sticky situation you weren't sure how to handle. she listens, thinks, and offers three useful ideas. 'you've got this babe,' she says as you leave, and you actually believe her.", wellness:+20, community:+12 },
+    { text:"clover is writing a policy brief and lets you read a section. it's sharp and warm and incredibly thorough and interesting. you are so excited about what she can do and how you can help.", wellness:+10, community:+20 },
   ],
   chamomile: [
-    { text:"chamomile checks in the way only they can: present, unhurried, actually curious. they pours you something herbal. their fingers rest on your wrist for a beat longer than the pulse-check requires. you feel genuinely seen and cared for.", wellness:+25, community:+10 },
-    { text:"they're running a drop-in today and lets you help. it's quiet and purposeful and exactly the kind of work that matters. you go home glowing a little.", wellness:+20, community:+18 },
+    { text:"chamomile checks in on you: present, not rushed, actually curious. they pour you something herbal and their fingers rest on your wrist for a beat longer than the pulse-check requires. you feel genuinely seen and cared for.", wellness:+25, community:+10 },
+    { text:"they're running a drop-in today and let you help. it's quiet and purposeful and exactly the kind of work that feels important. you go home glowing a little.", wellness:+20, community:+18 },
     { text:"they have a whole box of useful things like condoms, lube, vitamins, balm. they hand you exactly what you needed without any fuss. 'i just keep a stock,' they say. but it means so much.", wellness:+28, community:+8 },
-    { text:"you sit in the little garden behind their clinic, drinking iced tea in the sun. the beams warm your shoulders and the light smell of lavender floats in the air. they ask how you have been doing. you actually tell her. it helps more than you expected.", wellness:+30, community:+12 },
+    { text:"you sit in the little garden behind their clinic, drinking iced tea with fresh mint. the sunbeams warm your shoulders and the light smell of lavender floats in the air. they ask how you have been doing. you actually tell them. it helps more than you expected.", wellness:+30, community:+12 },
   ],
   thistle: [
-    { text:"you take a session through the house with proper equipment, clear rules, and someone at the door who greets you by name. you feel held before you're even touched. the work hums. safety is the sexiest thing in the world.", wellness:+20, money:+65 },
-    { text:"thistle runs a rope workshop on saturday afternoons and you pick up three new knots. your body tingles with inspiration for hours after. you're already thinking about next week.", wellness:+18, community:+18 },
-    { text:"a play party with low-key, lovely people, and everyone checking in throughout. your collar from last month is still in your bag. you leave feeling like the world figured something out it should have ages ago.", wellness:-5, community:+25, money:+30 },
+    { text:"you take a session through the house with proper equipment, clear rules, and someone at the door who greets you and checks up on you. you feel held before you're even touched by anyone. safety is the sexiest thing in the world.", wellness:+20, money:+65 },
+    { text:"thistle runs a rope workshop on saturday afternoons and you pick up three new knots. your mind tingles with inspiration for hours after. your body tingles a little too. and you're already planning for next week.", wellness:+18, community:+18 },
+    { text:"the dungeon is hosting a play party with low-key, lovely people, and everyone checking in with each other throughout. you leave feeling like the world might be an ok place to live in after all.", wellness:-5, community:+25, money:+30 },
     { text:"thistle gives a talk on consent and trust and what safety actually makes possible. it's the most interesting thing you've heard all week and you saw clover cheering from the back.", wellness:+15, community:+22 },
-    { text:"a quiet reset and sensual evening with candles, soft music, the kind of company that doesn't need you to perform. someone draws a slow shape on your back through the silk. you float home barefoot.", wellness:+30, community:+14 },
+    { text:"tonight is a quiet reset and sensual evening with candles, soft music, and good company. someone draws a slow shape on your back through the silk. you go home feeling like you're floating.", wellness:+30, community:+14 },
   ],
   center: [
-    { text:"the community center is buzzing today! someone's running a Know Your Rights workshop and there are homemade cookies. you sit in the back with your notebook and feel very much part of something.", wellness:+15, community:+25 },
-    { text:"you help set up for an event. you put out folding chairs, you brew some tea, and you meet people you feel like you've always known. someone's wearing sequins at 2pm. the afternoon passes like a good dream.", wellness:+20, community:+20 },
-    { text:"a town hall about decrim progress. the room is warm and a little chaotic and everyone is actually listening. this is exactly what it's supposed to look like.", wellness:+18, community:+28 },
-    { text:"the noticeboard is so full it's spilling onto a second board. there are resources, poetry, a cute drawing of the street, a thank-you note in glitter pen. you stand in front of it for a long time.", wellness:+22, community:+22 },
+    { text:"the community center is buzzing today! someone's running a Know Your Rights workshop and chamomile brought homemade cookies. you sit in the back with your notebook and feel very much like a part of something.", wellness:+15, community:+25 },
+    { text:"you help set up for an event. you put out folding chairs, you brew some tea, and you meet people you feel like you've always known. you don't have to censor anything, and they get it. the afternoon passes like a good dream.", wellness:+20, community:+20 },
+    { text:"the center is hosting a town hall about the decriminalization progress. the room is warm, and a little chaotic, but everyone is intently listening. this is exactly what it's supposed to look like.", wellness:+18, community:+28 },
+    { text:"the community board is so full that clover just put up a second one. there are resources, poetry, a cute drawing of the street, a thank-you note in glitter pen. you stand in front of it for a long time, absorbing it all in, feeling the warmth in your heart and your soul.", wellness:+22, community:+22 },
   ],
 };
 
@@ -115,17 +115,16 @@ const PERK_EVENTS = {
     3: "she shows you a payment app that finally, genuinely, works. 'no more frozen accounts!!!' she exclaims, and does a small celebratory shimmy.",
   },
   rose: {
-    2: "rose has a whole spreadsheet going that's community-maintained, full of useful notes, and already color-coded in pink and glitter. 'we can actually do this now,' she says. she's already done half of it.",
+    2: "rose has a whole spreadsheet going that's community-maintained, full of useful notes, and already color-coded in rainbow hues. 'we can actually do this now,' she says, excited as ever.",
   },
   clover: {
-    2: "clover updates the safety registry with a happy little flourish. 'it's legal to share now,' she says. 'that changes so much.' she's already writing the announcement.",
     4: "clover explains the hosting win in plain, bright language, drawing a diagram on a cocktail napkin. platforms can't just vanish us anymore..",
   },
   chamomile: {
     3: "chamomile processes her first digital payment and stares at the confirmation screen for a long, happy moment. 'i've been waiting years for this,' she says quietly.",
   },
   thistle: {
-    5: "thistle says it like she's been saving it, eyeliner sharp as ever: 'the work is still the work, but we're not treated like criminals anymore. do you know how much easier that makes everything feel?'",
+    5: "thistle says it like she's been holding it in, eyeliner sharp as ever: 'the work is still the work, but we're not treated like criminals anymore. do you know how much easier that makes EVERYTHING?'",
   },
 };
 
@@ -223,8 +222,8 @@ function updateUI() {
   const screenedUnlocked = G.perksWon >= 1;
   const bookBtn = document.getElementById('btn-book');
   const screenedBtn = document.getElementById('btn-screened');
-  if (bookBtn) bookBtn.style.display = (!screenedUnlocked && !isDone) ? 'flex' : 'none';
-  if (screenedBtn) screenedBtn.style.display = (screenedUnlocked && !isDone) ? 'flex' : 'none';
+  if (bookBtn) bookBtn.style.display = !screenedUnlocked ? 'flex' : 'none';
+  if (screenedBtn) screenedBtn.style.display = screenedUnlocked ? 'flex' : 'none';
 
   const fightBtn = document.getElementById('btn-fight-home');
   if (fightBtn) {
@@ -253,26 +252,31 @@ function updateUI() {
 }
 
 function renderBuildings() {
+  // map layer — purely visual, no interaction
   const grid = document.getElementById('buildings-grid');
   grid.innerHTML = '';
-  const visitable = !G.dayEnded && G.actionsUsed < 2;
   G.buildings.forEach(b => {
+    const img = document.createElement('img');
+    img.className = 'building-visual' + (!b.unlocked ? ' locked' : '');
+    img.src = `img/${b.id}.png`;
+    img.onerror = () => { img.style.display = 'none'; };
+    grid.appendChild(img);
+  });
+
+  // neighbor menu — clickable emoji cards below the map
+  const menu = document.getElementById('neighbor-menu');
+  if (!menu) return;
+  menu.innerHTML = '';
+  const visitable = !G.dayEnded && G.actionsUsed < 2;
+  G.buildings.filter(b => b.id !== 'home').forEach(b => {
     const card = document.createElement('div');
-    const isVisitable = b.unlocked && b.id !== 'home' && visitable;
-    card.className = 'building-card' + (!b.unlocked ? ' locked' : '') + (isVisitable ? ' visitable' : '');
+    const canVisit = b.unlocked && visitable;
+    card.className = 'neighbor-card' + (!b.unlocked ? ' locked' : '') + (canVisit ? ' visitable' : '');
     card.innerHTML = `
-      <div class="building-accent" style="background:${b.accent}"></div>
-      <div class="building-inner">
-        <div class="building-emoji-wrap">
-          <img src="img/${b.id}.png" alt="${b.emoji}" onload="this.classList.add('loaded')" onerror="this.style.display='none'">
-          <span class="emoji-fallback">${b.emoji}</span>
-        </div>
-        <div class="building-name">${b.name}</div>
-      </div>`;
-    if (isVisitable) {
-      card.addEventListener('click', () => triggerVisit(b.id));
-    }
-    grid.appendChild(card);
+      <span class="neighbor-emoji">${b.emoji}</span>
+      <span class="neighbor-name">${b.name}</span>`;
+    if (canVisit) card.addEventListener('click', () => triggerVisit(b.id));
+    menu.appendChild(card);
   });
 }
 
@@ -316,28 +320,35 @@ function triggerVisit(id) {
   if (!evt) evt = events[Math.floor(Math.random() * events.length)];
 
   const b = G.buildings.find(x => x.id === id);
-  setDialogue(b.emoji + ' ' + b.name, evt.text);
+  setDialogue(b.emoji + ' ' + b.name, evt.text, b.id);
 
   if (evt.wellness) statChange('wellness', evt.wellness);
   if (evt.community) statChange('community', evt.community);
-  if (evt.money) statChange('money', evt.money);
 
   G.visitedToday.push(id);
 
   let changes = [];
   if (evt.wellness) changes.push((evt.wellness > 0 ? '+' : '') + evt.wellness + ' 🌿');
   if (evt.community) changes.push((evt.community > 0 ? '+' : '') + evt.community + ' 🤝');
-  if (evt.money) changes.push((evt.money > 0 ? '+' : '') + evt.money + ' 💰');
   if (changes.length) showToast(changes.join('  '), 2000);
 
   useAction();
 }
 
-function setDialogue(speaker, text) {
+function setDialogue(speaker, text, portraitId = null) {
   const sp = document.getElementById('dialogue-speaker');
   sp.textContent = speaker;
   sp.style.display = speaker ? '' : 'none';
   document.getElementById('dialogue-text').textContent = text;
+  const portrait = document.getElementById('dialogue-portrait');
+  if (portraitId && portraitId !== 'center') {
+    portrait.src = `img/portrait-${portraitId}.png`;
+    portrait.classList.add('visible');
+    portrait.classList.toggle('portrait-left', portraitId === 'chamomile');
+  } else {
+    portrait.classList.remove('visible');
+    portrait.classList.remove('portrait-left');
+  }
 }
 
 function useAction() {
@@ -347,7 +358,7 @@ function useAction() {
     G.newPerkToday = null;
     statChange('wellness', -5);
     const dt = document.getElementById('day-done-text');
-    if (dt) dt.textContent = 'the day settles into evening. the street glows. someone\'s playing music two doors down. you did good today, and you\'re proud.';
+    if (dt) dt.textContent = 'the day settles into evening. the street glows. it was a good day and now it\'s time for bed.';
   }
   updateUI();
 }
@@ -360,17 +371,17 @@ function doHomeAction(action) {
 
   if (action === 'rest') {
     statChange('wellness', 40);
-    setDialogue('🌸 your place', 'you draw a bath hot enough to fog the mirror, light a candle, slip out of everything and into the silk. by the time the water cools your skin is pink and warm and yours again. soft. steady. unbothered.');
+    setDialogue('🌸 your place', 'you draw a bath hot enough to fog the mirror, light a candle, slip out of everything and into the silky. by the time the water cools your skin is pink and warm and yours again. soft. steady. unbothered.');
     showToast('+40 🌿', 1800);
   } else if (action === 'book') {
     statChange('money', 30);
     statChange('wellness', -15);
-    setDialogue('🌸 your place', 'a booking. they\'re nervous in a sweet way. you put them at ease, slow movement. at the end you stash the cash in your bra, and pick up something fresh from the bakery on the way home.');
+    setDialogue('🌸 your place', 'you take a booking. they\'re nervous in a sweet way. you put them at ease, slow movement. at the end you stash the cash in your bra, and pick up something fresh from the bakery on the way home.');
     showToast('+30 💰  −15 🌿', 1800);
   } else if (action === 'screened') {
     statChange('money', 50);
     statChange('wellness', -10);
-    setDialogue('🌸 your place', 'a screened booking. you knew exactly who you were meeting before you even fastened your garter. the work is easier to manage when you have the info you deserve. the money is good, and you feel satisfied.');
+    setDialogue('🌸 your place', 'you take a screened booking. you knew exactly who you were meeting before you even put on your lipstick. the work is easier to manage when you have the info you deserve. the money is good, and you feel satisfied.');
     showToast('+50 💰  −10 🌿', 1800);
   }
 
@@ -407,11 +418,19 @@ function startNewDay() {
     arrival.unlocked = true;
     const perkForNeighbor = PERKS.find(p => p.neighborId === arrival.id);
     const line = perkForNeighbor ? perkForNeighbor.neighborLine : (ARRIVAL_LINES[arrival.id] || '✨ a new neighbor has arrived.');
-    document.getElementById('arrival-text').textContent = line;
-    document.getElementById('arrival-banner').classList.add('show');
+    const isCenter = arrival.id === 'center';
+    document.getElementById('arrival-modal-title').textContent = isCenter
+      ? 'the community center is unlocked!'
+      : 'a new neighbor moved in!';
+    document.getElementById('arrival-modal-images').innerHTML = isCenter
+      ? `<img class="arrival-building" style="width:250px" src="img/crop-${arrival.id}.png" onerror="this.style.display='none'">`
+      : `<img class="arrival-building" src="img/crop-${arrival.id}.png" onerror="this.style.display='none'">
+         <img class="arrival-portrait" src="img/portrait-${arrival.id}.png" onerror="this.style.display='none'">`;
+    document.getElementById('arrival-modal-text').textContent = line;
+    document.getElementById('arrival-modal').classList.add('show');
   }
 
-  setDialogue('🌸 your place', 'a new day. the street is still here, a little fuller than yesterday. so are you. time for a coffee?');
+  setDialogue('🌸 your place', 'it\'s a new day and the street is still here, a little fuller than yesterday. you\'re still here too. time for a coffee?');
   updateUI();
 }
 
@@ -421,8 +440,6 @@ function startNewDay() {
 function unlockPerk() {
   G.perksWon++;
   G.newPerkToday = G.perksWon;
-  const perk = PERKS[G.perksWon - 1];
-  statChange('money', 20);
   updateUI();
 }
 
@@ -437,30 +454,37 @@ function showEnding() {
   let title, body;
   if (perks >= 4 && com > 60 && well > 40) {
     title = 'whoretopia: built';
-    body = 'five fights, five wins. the street is full and lit and humming. marigold\'s coffee is always on. rose has started a second zine, and a third. chamomile\'s garden is in bloom. thistle\'s has a waitlist a mile long and a candlelit back room. the community center is loud with laughter and someone\'s record collection. you built this, all of you, together. it\'s soft, it\'s warm, it\'s sexy, and it\'s ours. now go put on your lip gloss and enjoy it.';
+    body = 'five fights, five wins. the street is full and lit and humming. marigold\'s coffee is always brewing. rose has started a second zine, and a third. chamomile\'s garden is in full bloom. thistle\'s has a waitlist a mile long and just opened a candlelit back room. the community center is loud with laughter. you built this together. now go put on your eyeliner and enjoy your whoretopia.';
   } else if (perks >= 2 && com > 40) {
     title = 'your street is alive';
-    body = 'you didn\'t win every fight, but you fought, and the street shows it. there are neighbors now, lights in windows, a noticeboard thick with notes and at least one phone number. the community you built will carry this forward. that\'s most of it. that might be all of it.';
+    body = 'you didn\'t win every fight, but you fought, and the street shows it. there are neighbors now, lights in windows, a noticeboard thick with notes and at least one phone number. the community you built will carry this forward. that might just be enough.';
   } else if (perks >= 1) {
     title = 'still standing, still building';
-    body = 'one win. it was real. something changed because you showed up and fought for it. the street is quieter than it could be but it\'s yours, and you\'re still here, which means tomorrow is still possible.';
+    body = 'one win. it\'s just as real. something changed because you showed up and fought for it. the street is quieter than it could be but you\'re all still here, which means tomorrow is still possible.';
   } else {
     title = 'rest first. the fight continues.';
-    body = 'it\'s hard. and the fight cost more than expected this time. but you\'re still here, which means the street is still here, which means next time you\'ll know what to spend and what to save. run a bath. light something nice. then try again.';
+    body = 'it\'s hard. and the fight cost more than expected this time. but you\'re all still here, which means next time you\'ll know what to do. run a bath and have a snack. then try again.';
   }
 
   const screen = document.getElementById('ending-screen');
   document.getElementById('ending-title').textContent = title;
   document.getElementById('ending-body').textContent = body;
 
-  // build map
+  // build map — same stacked-image approach as town map
   const map = document.getElementById('ending-map');
   map.innerHTML = '';
+  const mapBg = document.createElement('img');
+  mapBg.className = 'ending-map-bg';
+  mapBg.src = 'img/map.png';
+  mapBg.alt = '';
+  mapBg.onerror = () => { mapBg.style.display = 'none'; };
+  map.appendChild(mapBg);
   G.buildings.forEach(b => {
-    const div = document.createElement('div');
-    div.className = 'ending-building' + (!b.unlocked ? ' locked' : '');
-    div.textContent = b.emoji;
-    map.appendChild(div);
+    const img = document.createElement('img');
+    img.className = 'building-visual' + (!b.unlocked ? ' locked' : '');
+    img.src = `img/${b.id}.png`;
+    img.onerror = () => { img.style.display = 'none'; };
+    map.appendChild(img);
   });
 
   // stat tile grid
@@ -485,16 +509,21 @@ function showEnding() {
     recapPerks.innerHTML = `<p class="recap-empty">no perks unlocked this run. the law won...for now.</p>`;
   }
 
-  // neighbors list
-  const neighborBuildings = G.buildings.filter(b => b.unlocked && b.id !== 'home' && b.id !== 'marigold');
+  // neighbors — portrait gallery of everyone who moved in (always includes marigold)
+  const neighborBuildings = G.buildings.filter(b => b.unlocked && b.id !== 'home' && b.id !== 'center');
   const recapNeighbors = document.getElementById('recap-neighbors');
   if (neighborBuildings.length) {
     recapNeighbors.innerHTML = `
-      <h4 class="recap-subhead">🏘️ new on the street</h4>
-      <ul class="recap-list">${neighborBuildings.map(b => `<li>${b.emoji} <strong>${b.name}</strong></li>`).join('')}</ul>
+      <h4 class="recap-subhead">🏘️ your neighbors</h4>
+      <div class="recap-portraits">${neighborBuildings.map(b => `
+        <div class="recap-portrait-item">
+          <img src="img/portrait-${b.id}.png" alt="${b.name}" onerror="this.style.display='none'">
+          <span>${b.name}</span>
+        </div>`).join('')}
+      </div>
     `;
   } else {
-    recapNeighbors.innerHTML = `<p class="recap-empty">no new neighbors moved in. just you and marigold this run.</p>`;
+    recapNeighbors.innerHTML = `<p class="recap-empty">no new neighbors moved in.</p>`;
   }
 
   screen.classList.add('show');
@@ -503,9 +532,13 @@ function showEnding() {
 function restartGame() {
   document.getElementById('ending-screen').classList.remove('show');
   initGame();
-  setDialogue('🌸 your place', 'the morning is yours. pick somewhere to go, or do something at home.');
+  setDialogue('🌸 your place', 'the sun is shining, the morning is yours. pick somewhere to go, or do something at home.');
   updateUI();
   document.getElementById('intro-screen').classList.add('show');
+}
+
+function closeArrivalModal() {
+  document.getElementById('arrival-modal').classList.remove('show');
 }
 
 function startGame() {
@@ -858,6 +891,7 @@ function showWinSequence(perk, nextNeighbor) {
         <div class="win-confetti">✨</div>
         <h2 style="color:var(--mint)">new neighbor incoming!!</h2>
         <p style="margin-bottom:10px">moving in tomorrow:</p>
+        <img class="neighbor-portrait" src="img/portrait-${perk.neighborId}.png" alt="${perk.neighborName}" onerror="this.style.display='none'">
         <div class="fight-result-card neighbor">
           <div class="fr-body">${perk.neighborLine}</div>
           <div class="fr-meta">${perk.neighborSkill}</div>
@@ -991,7 +1025,7 @@ function draw() {
 // POWERUPS SHOP
 // ═══════════════════════════════════════════════════
 function buyPowerup(type) {
-  const costs = { life: 25, shield: 30, slow: 35, wellness: 20 };
+  const costs = { life: 25, shield: 30, triple: 40, slow: 35, wellness: 20 };
   const cost = costs[type];
   if (G.money < cost) { showToast("not enough cash."); return; }
   statChange('money', -cost);
