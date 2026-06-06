@@ -213,19 +213,22 @@ function updateUI() {
   // action section done state
   const isDone = G.dayEnded || G.actionsUsed >= 2;
   document.getElementById('action-section').classList.toggle('done', isDone);
+  document.getElementById('town-panel').classList.toggle('day-ended', isDone);
 
   // screened booking replaces regular booking when unlocked
   const screenedUnlocked = G.perksWon >= 1;
   const bookBtn = document.getElementById('btn-book');
-  const screenedBtn = document.getElementById('btn-screened');
-  if (bookBtn) bookBtn.style.display = !screenedUnlocked ? 'flex' : 'none';
-  if (screenedBtn) screenedBtn.style.display = screenedUnlocked ? 'flex' : 'none';
+  const bookLabel = document.getElementById('book-cost-label');
+  if (bookBtn) bookBtn.onclick = () => doHomeAction(screenedUnlocked ? 'screened' : 'book');
+  if (bookLabel) bookLabel.textContent = screenedUnlocked ? 'screened ✨' : '+30 💰 −15 wellness';
 
   const fightBtn = document.getElementById('btn-fight-home');
   if (fightBtn) {
-    fightBtn.disabled = G.wellness <= 40 || isDone || G.foughtToday;
-    const costSpan = fightBtn.querySelector('.cost');
-    if (costSpan) costSpan.textContent = G.foughtToday ? 'already fought today' : 'need >40 wellness';
+    const fightDisabled = G.wellness <= 40 || isDone || G.foughtToday;
+    fightBtn.classList.toggle('disabled', fightDisabled);
+    fightBtn.style.pointerEvents = fightDisabled ? 'none' : '';
+    const fightLabel = document.getElementById('fight-cost-label');
+    if (fightLabel) fightLabel.textContent = G.foughtToday ? 'already fought today' : 'need >40 wellness';
   }
 
   const mapHint = document.getElementById('town-map-hint');
@@ -259,7 +262,8 @@ function renderBuildings() {
     grid.appendChild(img);
   });
 
-  // neighbor menu — clickable emoji cards below the map
+  // re-render neighbor menu inside modal
+  closeNeighborModal();
   const menu = document.getElementById('neighbor-menu');
   if (!menu) return;
   menu.innerHTML = '';
@@ -301,8 +305,23 @@ function renderPerks() {
   });
 }
 
+function openNeighborModal() {
+  const modal = document.getElementById('neighbor-modal');
+  if (modal) modal.classList.add('show');
+}
+
+function closeNeighborModal() {
+  const modal = document.getElementById('neighbor-modal');
+  if (modal) modal.classList.remove('show');
+}
+
+function handleNeighborModalBackdrop(e) {
+  if (e.target === document.getElementById('neighbor-modal')) closeNeighborModal();
+}
+
 function triggerVisit(id) {
   if (G.actionsUsed >= 2 || G.dayEnded) return;
+  closeNeighborModal();
 
   const events = NEIGHBOR_EVENTS[id];
   if (!events) return;
@@ -539,6 +558,33 @@ function closeArrivalModal() {
 
 function startGame() {
   document.getElementById('intro-screen').classList.remove('show');
+  document.getElementById('music-toggle').classList.add('visible');
+  playMusic();
+}
+
+// ── MUSIC ──
+const bgMusic = document.getElementById('bg-music');
+let musicMuted = false;
+
+function playMusic() {
+  if (!musicMuted && bgMusic) {
+    bgMusic.volume = 0.45;
+    bgMusic.play().catch(() => {});
+  }
+}
+
+function toggleMusic() {
+  musicMuted = !musicMuted;
+  const btn = document.getElementById('music-toggle');
+  if (musicMuted) {
+    bgMusic.pause();
+    btn.textContent = '♪';
+    btn.classList.add('muted');
+  } else {
+    bgMusic.play().catch(() => {});
+    btn.textContent = '♪';
+    btn.classList.remove('muted');
+  }
 }
 
 // ═══════════════════════════════════════════════════
@@ -553,7 +599,7 @@ let game = {
   wave: 0,
   lives: 3,
   score: 0,
-  player: { x: W/2, y: H - 40, w: 28, h: 28, speed: 14 },
+  player: { x: W/2, y: H - 40, w: 28, h: 28, speed: 5 },
   bullets: [],
   enemyBullets: [],
   enemies: [],
@@ -599,7 +645,7 @@ function spawnWave() {
   game.enemyBullets = [];
   grid.dir = 1;
   grid.stepTimer = 0;
-  grid.stepInterval = 45;
+  grid.stepInterval = 65;
 
   // 3 rows × 6 cols: FOSTA-SESTA top, Vice cops middle, Lobbyists bottom
   const rowTypes = [1, 3, 0];
@@ -633,7 +679,7 @@ function startFight() {
   game.waveComplete = false;
   game.frameCount = 0;
   game.invincible = 0;
-  grid.dir = 1; grid.stepTimer = 0; grid.stepInterval = 45;
+  grid.dir = 1; grid.stepTimer = 0; grid.stepInterval = 65;
 
   spawnWave();
   requestAnimationFrame(gameLoop);
@@ -699,11 +745,11 @@ function update() {
   if (keys.fire && now - game.lastFire > 220) {
     game.lastFire = now;
     if (game.tripleShot) {
-      game.bullets.push({ x: game.player.x - 10, y: game.player.y - 14, vy: -13 });
-      game.bullets.push({ x: game.player.x, y: game.player.y - 14, vy: -13 });
-      game.bullets.push({ x: game.player.x + 10, y: game.player.y - 14, vy: -13 });
+      game.bullets.push({ x: game.player.x - 10, y: game.player.y - 14, vy: -8 });
+      game.bullets.push({ x: game.player.x, y: game.player.y - 14, vy: -8 });
+      game.bullets.push({ x: game.player.x + 10, y: game.player.y - 14, vy: -8 });
     } else {
-      game.bullets.push({ x: game.player.x, y: game.player.y - 14, vy: -13 });
+      game.bullets.push({ x: game.player.x, y: game.player.y - 14, vy: -8 });
     }
   }
 
@@ -720,26 +766,26 @@ function update() {
     grid.stepTimer = 0;
     let wouldHitEdge = false;
     game.enemies.forEach(e => {
-      const nx = e.x + grid.dir * 16;
+      const nx = e.x + grid.dir * 10;
       if (nx > W - 20 || nx < 20) wouldHitEdge = true;
     });
     if (wouldHitEdge) {
       grid.dir *= -1;
-      game.enemies.forEach(e => { e.y += 16; });
+      game.enemies.forEach(e => { e.y += 10; });
       // speed up as enemies are destroyed
-      grid.stepInterval = Math.max(6, 18 - (18 - game.enemies.length) * 0.8);
+      grid.stepInterval = Math.max(12, 30 - (18 - game.enemies.length) * 1.0);
     } else {
-      game.enemies.forEach(e => { e.x += grid.dir * 16; });
+      game.enemies.forEach(e => { e.x += grid.dir * 10; });
     }
   }
 
   // enemy shoot — bottom row of each column
-  if (game.frameCount % 110 === 0 && game.enemies.length > 0) {
+  if (game.frameCount % 160 === 0 && game.enemies.length > 0) {
     const cols = [...new Set(game.enemies.map(e => e.col))];
     const col = cols[Math.floor(Math.random() * cols.length)];
     const inCol = game.enemies.filter(e => e.col === col).sort((a, b) => b.y - a.y);
     if (inCol.length) {
-      game.enemyBullets.push({ x: inCol[0].x, y: inCol[0].y + 10, vy: 5.0 });
+      game.enemyBullets.push({ x: inCol[0].x, y: inCol[0].y + 10, vy: 3.0 });
     }
   }
 

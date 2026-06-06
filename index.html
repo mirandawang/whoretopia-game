@@ -30,6 +30,7 @@
 
   <div id="day-header">
     <div id="day-title">
+      <img id="day-sun" src="img/sun.png" alt="sun">
       <div id="day-title-inner">
         <img id="day-title-bg" src="img/days/day-title.png" alt="day of 10">
         <img id="day-number-img" src="img/days/1.PNG" alt="1">
@@ -88,33 +89,45 @@
   </div>
 
   <div id="action-section">
-    <h3 id="action-section-title">at home</h3>
+    <img class="action-section-title-img" id="title-at-home" src="img/at-home.png" alt="at home">
     <p id="action-section-hint">tap an action below ↓</p>
     <div id="home-actions">
-      <button class="action-btn btn-rest" onclick="doHomeAction('rest')">
-        🌙 rest <span class="cost">+40 wellness</span>
-      </button>
-      <button class="action-btn btn-book" id="btn-book" onclick="doHomeAction('book')">
-        📋 take a booking <span class="cost">+30 💰 −15 wellness</span>
-      </button>
-      <button class="action-btn btn-screened" id="btn-screened" onclick="doHomeAction('screened')" style="display:none">
-        ✅ screened booking <span class="cost">+50 💰 −10 wellness</span>
-      </button>
+      <div class="action-item">
+        <img class="action-img-btn" id="btn-rest" src="img/rest.png" alt="rest" onclick="doHomeAction('rest')">
+        <span class="action-cost">+40 wellness</span>
+      </div>
+      <div class="action-item">
+        <img class="action-img-btn" id="btn-book" src="img/take-a-booking.png" alt="take a booking" onclick="doHomeAction('book')">
+        <span class="action-cost" id="book-cost-label">+30 💰 &minus;15 wellness</span>
+      </div>
     </div>
-    <h3 id="action-section-title">your neighbors</h3>
-    <p id="action-section-hint">click a neighbor to visit ↓</p>
-    <div id="neighbor-menu"></div>
+    <div class="action-item">
+      <img id="visit-a-neighbor-img" src="img/visit-a-neighbor.png" alt="visit a neighbor" onclick="openNeighborModal()">
+      <span class="action-cost">varies ✨</span>
+    </div>
   </div>
 
   <div id="perks-section">
-    <h3>perks won</h3>
+    <img class="action-section-title-img" id="title-perks-unlocked" src="img/perks-unlocked.png" alt="perks unlocked">
     <p id="perks-hint">unlock by fighting the law</p>
     <div id="perks-list"></div>
-    <button class="action-btn btn-fight" id="btn-fight-home" onclick="goFight()">
-      ⚡ fight the law <span class="cost">need >40 wellness</span>
-    </button>
+    <div class="action-item">
+      <img class="action-img-btn" id="btn-fight-home" src="img/fight-the-law.png" alt="fight the law" onclick="goFight()">
+      <span class="action-cost" id="fight-cost-label">need &gt;40 wellness</span>
+    </div>
   </div>
 
+</div>
+
+<!-- NEIGHBOR MODAL -->
+<div id="neighbor-modal" onclick="handleNeighborModalBackdrop(event)">
+  <div id="neighbor-modal-inner">
+    <button id="neighbor-modal-close" onclick="closeNeighborModal()">✕</button>
+    <img class="action-section-title-img" id="title-your-neighbors" src="img/your-neighbors.png" alt="your neighbors">
+    <p class="neighbor-modal-hint">click a neighbor to visit ↓</p>
+    <p class="neighbor-modal-note">neighbors unlock as you fight the law ✨</p>
+    <div id="neighbor-menu"></div>
+  </div>
 </div>
 
 <!-- ARRIVAL MODAL -->
@@ -171,6 +184,9 @@
     <button id="ending-back" onclick="restartGame()">← back to town</button>
   </div>
 </div>
+
+<audio id="bg-music" src="harvest.mp3" loop preload="auto"></audio>
+<button id="music-toggle" onclick="toggleMusic()" title="toggle music">♪</button>
 
 <div id="toast"></div>
 
