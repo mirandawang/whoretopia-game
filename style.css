@@ -37,6 +37,9 @@ body {
   -webkit-overflow-scrolling: touch;
   color: #3a2a3a;
   cursor: url('img/flower-cursor.webp') 28 22, auto;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  zoom: 0.9;
 }
 
 h1, h2, h3, .chunky {
@@ -268,6 +271,17 @@ h1, h2, h3, .chunky {
 
 /* ── MAIN PANEL ── */
 
+/* ── STATS SECTION ── */
+#stats-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+#title-stats {
+  max-width: 100px;
+}
+
 /* ── STATS BAR ── */
 #stats-bar {
   background: #fff;
@@ -276,17 +290,7 @@ h1, h2, h3, .chunky {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 12px;
-  margin-bottom: 12px;
   align-items: start;
-}
-#stats-label {
-  grid-column: 1 / -1;
-  font-family: 'Nunito', sans-serif;
-  font-weight: 800;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: .06em;
-  color: #aaa;
 }
 .stat {
   display: flex;
@@ -350,7 +354,7 @@ h1, h2, h3, .chunky {
   margin-bottom: 6px;
   background: none;
   padding: 0;
-  padding-top: 5%;
+  padding-top: 10px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -377,35 +381,20 @@ h1, h2, h3, .chunky {
   width: auto;
 }
 #day-header .subtitle { font-size: 12px; color: #888; margin-top: 2px; }
-#actions-counter {
+#actions-display {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 8px;
-  font-family: 'Nunito', sans-serif;
-  font-weight: 800;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: .06em;
-  color: #aaa;
-  width: 100%;
+  gap: 6px;
   margin: 0 0 12px;
-  padding: 10px 14px;
-  background: #fff;
-  border-radius: var(--radius-sm);
 }
-.actions-label { flex-shrink: 0; }
-#actions-pips { display: flex; gap: 6px; align-items: center; }
-.action-pip {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: #eee;
-  border: 2px solid #ddd;
-  transition: background .25s, border-color .25s;
+#title-actions {
+  max-width: 180px;
 }
-.action-pip.filled {
-  background: var(--rose);
-  border-color: var(--rose-dark);
+#actions-count-img {
+  height: 48px;
+  width: auto;
+  display: block;
 }
 
 /* ── TOWN MAP ── */
@@ -414,12 +403,8 @@ h1, h2, h3, .chunky {
   margin: 14px 0 6px;
 }
 #town-map-title {
-  font-family: 'Nunito', sans-serif;
-  font-weight: 800;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  color: #888;
+  max-width: 300px;
+  margin: 0 auto 4px;
 }
 #town-map-hint {
   font-family: 'Nunito', sans-serif;
@@ -1363,9 +1348,20 @@ h1, h2, h3, .chunky {
 
 /* ── BASE PANEL LAYOUT ── */
 #town-panel {
-  padding: 12px 16px 80px;
+  position: relative;
+  padding: 12px 16px 24px;
   max-width: 520px;
   margin: 0 auto;
+}
+#town-panel::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border: 9px solid #9dd668;
+  border-radius: calc(var(--radius) + 8px);
+  filter: url(#squiggle-filter);
+  pointer-events: none;
+  z-index: 10;
 }
 
 /* ── DESKTOP RESPONSIVE LAYOUT ── */
@@ -1374,12 +1370,18 @@ h1, h2, h3, .chunky {
     background: #fdf9f4;
   }
 
+  .top-squiggle-line {
+    width: calc(100% + 64px);
+    margin: -28px -32px 0;
+  }
+
   #town-panel {
     max-width: 1180px;
-    padding: 28px 32px 80px;
+    padding: 28px 32px 28px;
     display: grid;
     grid-template-columns: 280px minmax(0, 1fr) 300px;
     grid-template-areas:
+      "sqline  sqline    sqline"
       "day     day       day"
       "pips    dialog    stats"
       "perks   mapttl    actions"
@@ -1390,6 +1392,7 @@ h1, h2, h3, .chunky {
   /* day ended: dayend pushes dialog down, perks/actions still only alongside map */
   #town-panel.day-ended {
     grid-template-areas:
+      "sqline  sqline    sqline"
       "day     day       day"
       "pips    dayend    stats"
       "perks   dialog    actions"
@@ -1399,6 +1402,7 @@ h1, h2, h3, .chunky {
   /* perk banner variants */
   #town-panel:has(#perk-banner.show) {
     grid-template-areas:
+      "sqline  sqline    sqline"
       "day     day       day"
       "perkban perkban   perkban"
       "pips    dialog    stats"
@@ -1407,6 +1411,7 @@ h1, h2, h3, .chunky {
   }
   #town-panel.day-ended:has(#perk-banner.show) {
     grid-template-areas:
+      "sqline  sqline    sqline"
       "day     day       day"
       "perkban perkban   perkban"
       "pips    dayend    stats"
@@ -1415,19 +1420,20 @@ h1, h2, h3, .chunky {
       "perks   map       actions";
   }
 
-  #stats-bar       { grid-area: stats; margin-bottom: 0; }
-  #actions-counter { grid-area: pips; margin: 0; }
+  .top-squiggle-line { grid-area: sqline; margin-bottom: 0; }
+  #stats-section   { grid-area: stats; margin-bottom: 25px; }
+  #actions-display { grid-area: pips; margin: 0; }
   #day-header      { grid-area: day; margin-bottom: 0; }
   #perk-banner.show { margin-bottom: 0; }
   #perk-banner     { grid-area: perkban; }
   #town-map-title  { grid-area: mapttl; margin-top: 0; }
   #town-map        { grid-area: map; margin-bottom: 0; }
-  #dialogue-box    { grid-area: dialog; margin-bottom: 0; }
+  #dialogue-box    { grid-area: dialog; margin-bottom: 0; align-self: stretch; }
   #day-done-card   { grid-area: dayend; margin-top: 0; }
   #action-section  { grid-area: actions; margin-bottom: 0; }
   #perks-section   { grid-area: perks; margin-bottom: 0; position: sticky; top: 20px; }
 
-  /* stats bar: vertical stack in left column */
+  /* stats bar: vertical stack in right column */
   #stats-bar {
     grid-template-columns: 1fr;
     padding: 10px 14px;
@@ -1436,18 +1442,11 @@ h1, h2, h3, .chunky {
   .stat-header { font-size: 12px; }
   .stat-val { font-size: 13px; }
   .stat-bar-wrap { height: 6px; }
+  #actions-count-img { height: 56px; }
 
   /* roomier day header */
   #day-title { max-width: 380px; }
   #day-header .subtitle { font-size: 13px; margin-top: 4px; }
-
-  /* actions-counter in right column: stack label above pips */
-  #actions-counter {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-    margin-bottom: 0;
-  }
 
   /* main column polish */
   #town-map-title { text-align: left; font-size: 13px; margin-bottom: 8px; }
@@ -1465,6 +1464,14 @@ h1, h2, h3, .chunky {
   /* intro card a touch larger on desktop */
   #intro-card { max-width: 460px; padding: 36px 32px; }
   #intro-body p { font-size: 15px; }
+}
+
+/* ── MOBILE ONLY: top + bottom squiggles only ── */
+@media (max-width: 959px) {
+  #town-panel::before {
+    border-left: none;
+    border-right: none;
+  }
 }
 
 /* ── MOBILE ONLY: move fight-the-law button above perks title ── */

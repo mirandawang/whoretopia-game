@@ -197,15 +197,9 @@ function updateUI() {
   // day header
   document.getElementById('day-number-img').src = 'img/days/' + G.day + '.PNG';
 
-  // actions counter pips
+  // actions counter image
   const left = Math.max(0, 2 - G.actionsUsed);
-  const pips = document.getElementById('actions-pips');
-  pips.innerHTML = '';
-  for (let i = 0; i < 2; i++) {
-    const p = document.createElement('div');
-    p.className = 'action-pip' + (i < left ? ' filled' : '');
-    pips.appendChild(p);
-  }
+  document.getElementById('actions-count-img').src = 'img/days/' + left + '.PNG';
 
   // buildings grid
   renderBuildings();
