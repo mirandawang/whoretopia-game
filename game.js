@@ -367,17 +367,17 @@ function doHomeAction(action) {
 
   if (action === 'rest') {
     statChange('wellness', 40);
-    setDialogue('🌸 your place', 'you draw a bath hot enough to fog the mirror, light a candle, slip out of everything and into the silky. by the time the water cools your skin is pink and warm and yours again. soft. steady. unbothered.');
+    setDialogue('🌸 your place', 'you draw a bath hot enough to fog the mirror, light a candle, slip out of everything and into the silky waters. soft and unbothered.');
     showToast('+40 🌿', 1800);
   } else if (action === 'book') {
     statChange('money', 30);
     statChange('wellness', -15);
-    setDialogue('🌸 your place', 'you take a booking. they\'re nervous in a sweet way. you put them at ease, slow movement. at the end you stash the cash in your bra, and pick up something fresh from the bakery on the way home.');
+    setDialogue('🌸 your place', 'you take a booking. it went well, but still work. at the end you stash your cash, and pick up something fresh from a cafe on your way home.');
     showToast('+30 💰  −15 🌿', 1800);
   } else if (action === 'screened') {
     statChange('money', 50);
     statChange('wellness', -10);
-    setDialogue('🌸 your place', 'you take a screened booking. you knew exactly who you were meeting before you even put on your lipstick. the work is easier to manage when you have the info you deserve. the money is good, and you feel satisfied.');
+    setDialogue('🌸 your place', 'you take a screened booking. you knew exactly who you were meeting before you even put on your makeup. the work is easier to manage when you have the info you deserve. the money is good, and you feel satisfied.');
     showToast('+50 💰  −10 🌿', 1800);
   }
 
