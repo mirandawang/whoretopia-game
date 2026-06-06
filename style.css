@@ -18,7 +18,7 @@
   --radius-sm: 12px;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; cursor: url('img/lipscursor.webp'), auto !important; }
+* { box-sizing: border-box; margin: 0; padding: 0; cursor: url('img/lipscursor.webp') 47 55, auto !important; }
 
 /* ── CUTE SCROLLBAR ── */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
@@ -36,7 +36,7 @@ body {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   color: #3a2a3a;
-  cursor: url('img/flower-cursor.webp'), auto;
+  cursor: url('img/flower-cursor.webp') 28 22, auto;
 }
 
 h1, h2, h3, .chunky {
@@ -459,6 +459,23 @@ h1, h2, h3, .chunky {
 }
 .building-visual.locked {
   display: none;
+}
+
+.building-clickzone {
+  position: absolute;
+  z-index: 5;
+  border-radius: 8px;
+  transition: background .15s, box-shadow .15s;
+}
+.building-clickzone.visitable:hover {
+  background: rgba(255, 112, 152, 0.2);
+  box-shadow: 0 0 0 2px rgba(255, 112, 152, 0.55), inset 0 0 14px rgba(255, 112, 152, 0.15);
+}
+.building-clickzone.visitable:active {
+  background: rgba(255, 112, 152, 0.32);
+}
+.building-clickzone.locked-zone:hover {
+  background: rgba(0, 0, 0, 0.07);
 }
 
 .neighbor-card {

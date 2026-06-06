@@ -2,13 +2,13 @@
 // GAME STATE
 // ═══════════════════════════════════════════════════
 const BUILDINGS = [
-  { id:'home',      name:'your place',              emoji:'🏠', accent:'#ff7098', unlocked:true,  perkNeeded:0, mapX:10, mapY:75 },
-  { id:'marigold',  name:"marigold's",              emoji:'🌼', accent:'#f8e048', unlocked:true,  perkNeeded:0, mapX:24, mapY:72 },
-  { id:'rose',      name:"rose's",                  emoji:'🌹', accent:'#ffa878', unlocked:false, perkNeeded:1, mapX:37, mapY:75 },
-  { id:'clover',    name:"clover's legal aid",      emoji:'⚖️', accent:'#68d8a8', unlocked:false, perkNeeded:2, mapX:50, mapY:70 },
-  { id:'chamomile', name:"chamomile's health clinic",             emoji:'🏥', accent:'#ffa878', unlocked:false, perkNeeded:3, mapX:63, mapY:75 },
-  { id:'thistle',   name:"thistle's bdsm dungeon",               emoji:'🔗', accent:'#c8b8f8', unlocked:false, perkNeeded:4, mapX:76, mapY:72 },
-  { id:'center',    name:'community center',        emoji:'🏛️', accent:'#88c8f0', unlocked:false, perkNeeded:5, mapX:88, mapY:75 },
+  { id:'home',      name:'your place',               emoji:'🏠', accent:'#ff7098', unlocked:true,  perkNeeded:0, bx:44.9, by:3.7,  bw:18.1, bh:20.1 },
+  { id:'marigold',  name:"marigold's",               emoji:'🌼', accent:'#f8e048', unlocked:true,  perkNeeded:0, bx:17.9, by:10.6, bw:18.3, bh:20.1 },
+  { id:'rose',      name:"rose's",                   emoji:'🌹', accent:'#ffa878', unlocked:false, perkNeeded:1, bx:78.4, by:22.3, bw:16.8, bh:19.4 },
+  { id:'clover',    name:"clover's legal aid",       emoji:'⚖️', accent:'#68d8a8', unlocked:false, perkNeeded:2, bx:4.7,  by:38.6, bw:20.4, bh:19.4 },
+  { id:'chamomile', name:"chamomile's health clinic",emoji:'🏥', accent:'#ffa878', unlocked:false, perkNeeded:3, bx:72.6, by:58.4, bw:25.4, bh:17.5 },
+  { id:'thistle',   name:"thistle's bdsm dungeon",   emoji:'🔗', accent:'#c8b8f8', unlocked:false, perkNeeded:4, bx:6.4,  by:67.6, bw:26.2, bh:19.2 },
+  { id:'center',    name:'community center',         emoji:'🏛️', accent:'#88c8f0', unlocked:false, perkNeeded:5, bx:33.6, by:37.2, bw:38.2, bh:20.7 },
 ];
 
 const PERKS = [
@@ -251,15 +251,38 @@ function updateUI() {
 }
 
 function renderBuildings() {
-  // map layer — purely visual, no interaction
   const grid = document.getElementById('buildings-grid');
   grid.innerHTML = '';
+
+  // visual layers — purely decorative
   G.buildings.forEach(b => {
     const img = document.createElement('img');
     img.className = 'building-visual' + (!b.unlocked ? ' locked' : '');
     img.src = `img/${b.id}.png`;
     img.onerror = () => { img.style.display = 'none'; };
     grid.appendChild(img);
+  });
+
+  // clickable zones positioned over each non-home building
+  const canAct = !G.dayEnded && G.actionsUsed < 2;
+  G.buildings.filter(b => b.id !== 'home').forEach(b => {
+    const zone = document.createElement('div');
+    zone.style.left   = b.bx + '%';
+    zone.style.top    = b.by + '%';
+    zone.style.width  = b.bw + '%';
+    zone.style.height = b.bh + '%';
+
+    if (b.unlocked && canAct) {
+      zone.className = 'building-clickzone visitable';
+      zone.addEventListener('click', () => triggerVisit(b.id));
+      zone.title = 'visit ' + b.name;
+    } else if (!b.unlocked) {
+      zone.className = 'building-clickzone locked-zone';
+      zone.addEventListener('click', () => showToast('not unlocked yet — keep fighting the law! ⚖️'));
+    } else {
+      zone.className = 'building-clickzone';
+    }
+    grid.appendChild(zone);
   });
 
   // re-render neighbor menu inside modal
