@@ -20,6 +20,13 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* ── CUTE SCROLLBAR ── */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #fde8f0; border-radius: 99px; }
+::-webkit-scrollbar-thumb { background: var(--rose); border-radius: 99px; border: 2px solid #fde8f0; }
+::-webkit-scrollbar-thumb:hover { background: var(--rose-dark); }
+* { scrollbar-width: thin; scrollbar-color: var(--rose) #fde8f0; }
+
 body {
   font-family: 'Nunito Sans', sans-serif;
   background: #fdf9f4;
@@ -1429,6 +1436,19 @@ h1, h2, h3, .chunky {
   /* intro card a touch larger on desktop */
   #intro-card { max-width: 460px; padding: 36px 32px; }
   #intro-body p { font-size: 15px; }
+}
+
+/* ── MOBILE ONLY: move fight-the-law button above perks title ── */
+@media (max-width: 599px) {
+  #perks-section .action-item:has(#btn-fight-home) {
+    order: -1;
+  }
+  #btn-fight-home {
+    max-width: 55%;
+  }
+  #day-header {
+    padding-top: 16px;
+  }
 }
 
 /* ── EXTRA WIDE: slightly more breathing room ── */
