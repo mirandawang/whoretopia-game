@@ -22,10 +22,12 @@
 
 body {
   font-family: 'Nunito Sans', sans-serif;
-  background: linear-gradient(160deg, var(--sky) 0%, var(--sky2) 100%);
+  background: #fdf9f4;
   min-height: 100vh;
   min-height: -webkit-fill-available;
   overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   color: #3a2a3a;
 }
 
@@ -43,6 +45,7 @@ h1, h2, h3, .chunky {
   z-index: 150;
   flex-direction: column;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 #fight-modal.show { display: flex; }
 #fight-modal-inner {
@@ -328,11 +331,8 @@ h1, h2, h3, .chunky {
   width: 100%;
   max-width: 320px;
   margin-bottom: 20px;
-  background: #fff;
-  border-radius: var(--radius-sm);
-  padding-top: 30px;
-  padding-bottom: 30px;
-  padding-right: 10px;
+  background: none;
+  padding: 0;
 }
 #day-title-inner {
   position: relative;
@@ -408,7 +408,7 @@ h1, h2, h3, .chunky {
   width: 100%;
   margin-bottom: 12px;
   min-height: 160px;
-  background: rgba(255,255,255,.25);
+  background: linear-gradient(160deg, var(--sky) 0%, var(--sky2) 100%);
   border-radius: var(--radius);
   overflow: hidden;
 }
@@ -843,6 +843,7 @@ h1, h2, h3, .chunky {
   flex-direction: column;
   align-items: center;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   padding: 32px 24px 60px;
   text-align: center;
 }
@@ -1069,6 +1070,7 @@ h1, h2, h3, .chunky {
   align-items: center;
   justify-content: center;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   padding: 32px 20px 60px;
 }
 #intro-screen.show { display: flex; }
@@ -1148,7 +1150,7 @@ h1, h2, h3, .chunky {
 /* ── DESKTOP RESPONSIVE LAYOUT ── */
 @media (min-width: 960px) {
   body {
-    background: linear-gradient(160deg, var(--sky) 0%, var(--sky2) 60%, #e8ddf5 100%);
+    background: #fdf9f4;
   }
 
   #town-panel {
