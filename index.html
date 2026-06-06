@@ -186,8 +186,12 @@
   </div>
 </div>
 
-<audio id="bg-music" src="harvest.mp3" loop preload="auto"></audio>
-<button id="music-toggle" onclick="toggleMusic()" title="toggle music">♪</button>
+<audio id="bg-music" src="lobbymusic.mp3" preload="auto"></audio>
+<div id="music-controls">
+  <button id="music-prev" onclick="prevTrack()" title="previous track">‹</button>
+  <button id="music-toggle" onclick="toggleMusic()" title="toggle music">♪</button>
+  <button id="music-next" onclick="nextTrack()" title="next track">›</button>
+</div>
 
 <div id="toast"></div>
 

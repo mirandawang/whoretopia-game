@@ -558,17 +558,36 @@ function closeArrivalModal() {
 
 function startGame() {
   document.getElementById('intro-screen').classList.remove('show');
-  document.getElementById('music-toggle').classList.add('visible');
+  document.getElementById('music-controls').classList.add('visible');
   playMusic();
 }
 
 // ── MUSIC ──
 const bgMusic = document.getElementById('bg-music');
 let musicMuted = false;
+const TRACKS = ['lobbymusic.mp3', 'harvest.mp3', 'daisy.mp3'];
+let trackIdx = 0;
+
+bgMusic.addEventListener('ended', () => { nextTrack(); });
+
+function loadTrack() {
+  bgMusic.src = TRACKS[trackIdx];
+  if (!musicMuted) { bgMusic.volume = 0.25; bgMusic.play().catch(() => {}); }
+}
+
+function prevTrack() {
+  trackIdx = (trackIdx - 1 + TRACKS.length) % TRACKS.length;
+  loadTrack();
+}
+
+function nextTrack() {
+  trackIdx = (trackIdx + 1) % TRACKS.length;
+  loadTrack();
+}
 
 function playMusic() {
   if (!musicMuted && bgMusic) {
-    bgMusic.volume = 0.45;
+    bgMusic.volume = 0.25;
     bgMusic.play().catch(() => {});
   }
 }
@@ -578,11 +597,9 @@ function toggleMusic() {
   const btn = document.getElementById('music-toggle');
   if (musicMuted) {
     bgMusic.pause();
-    btn.textContent = '♪';
     btn.classList.add('muted');
   } else {
     bgMusic.play().catch(() => {});
-    btn.textContent = '♪';
     btn.classList.remove('muted');
   }
 }
