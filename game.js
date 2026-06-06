@@ -352,26 +352,30 @@ function triggerVisit(id) {
   if (!evt) evt = events[Math.floor(Math.random() * events.length)];
 
   const b = G.buildings.find(x => x.id === id);
-  setDialogue(b.emoji + ' ' + b.name, evt.text, b.id);
-
   if (evt.wellness) statChange('wellness', evt.wellness);
   if (evt.community) statChange('community', evt.community);
+  if (evt.money) statChange('money', evt.money);
 
   G.visitedToday.push(id);
 
   let changes = [];
-  if (evt.wellness) changes.push((evt.wellness > 0 ? '+' : '') + evt.wellness + ' 🌿');
-  if (evt.community) changes.push((evt.community > 0 ? '+' : '') + evt.community + ' 🤝');
-  if (changes.length) showToast(changes.join('  '), 2000);
+  if (evt.wellness) changes.push((evt.wellness > 0 ? '+' : '') + evt.wellness + ' wellness');
+  if (evt.community) changes.push((evt.community > 0 ? '+' : '') + evt.community + ' community');
+  if (evt.money) changes.push((evt.money > 0 ? '+' : '') + evt.money + ' money');
+  const effectsStr = changes.join('  ·  ');
+
+  setDialogue(b.emoji + ' ' + b.name, evt.text, b.id, effectsStr);
 
   useAction();
 }
 
-function setDialogue(speaker, text, portraitId = null) {
+function setDialogue(speaker, text, portraitId = null, effects = null) {
   const sp = document.getElementById('dialogue-speaker');
   sp.textContent = speaker;
   sp.style.display = speaker ? '' : 'none';
   document.getElementById('dialogue-text').textContent = text;
+  const eff = document.getElementById('dialogue-effects');
+  if (eff) eff.textContent = effects || '';
   const portrait = document.getElementById('dialogue-portrait');
   if (portraitId && portraitId !== 'center') {
     portrait.src = `img/portrait-${portraitId}.png`;
@@ -403,18 +407,15 @@ function doHomeAction(action) {
 
   if (action === 'rest') {
     statChange('wellness', 40);
-    setDialogue('🌸 your place', 'you draw a bath hot enough to fog the mirror, light a candle, slip out of everything and into the silky waters. soft and unbothered.');
-    showToast('+40 🌿', 1800);
+    setDialogue('🌸 your place', 'you draw a bath hot enough to fog the mirror, light a candle, slip out of everything and into the silky waters. soft and unbothered.', null, '+40 wellness');
   } else if (action === 'book') {
     statChange('money', 30);
     statChange('wellness', -15);
-    setDialogue('🌸 your place', 'you take a booking. it went well, but still work. at the end you stash your cash, and pick up something fresh from a cafe on your way home.');
-    showToast('+30 💰  −15 🌿', 1800);
+    setDialogue('🌸 your place', 'you take a booking. it went well, but still work. at the end you stash your cash, and pick up something fresh from a cafe on your way home.', null, '+30 money  ·  −15 wellness');
   } else if (action === 'screened') {
     statChange('money', 50);
     statChange('wellness', -10);
-    setDialogue('🌸 your place', 'you take a screened booking. you knew exactly who you were meeting before you even put on your makeup. the work is easier to manage when you have the info you deserve. the money is good, and you feel satisfied.');
-    showToast('+50 💰  −10 🌿', 1800);
+    setDialogue('🌸 your place', 'you take a screened booking. you knew exactly who you were meeting before you even put on your makeup. the work is easier to manage when you have the info you deserve. the money is good, and you feel satisfied.', null, '+50 money  ·  −10 wellness');
   }
 
   useAction();
@@ -1146,6 +1147,20 @@ function activateCheat() {
   setDialogue('✨ whoretopia', 'cheat code activated! all perks and neighbors are yours. the street is full, the lights are on, and the community center has glitter on the door. 🌟');
   showToast('✨ whoretopia unlocked!', 3500);
   updateUI();
+}
+
+// ═══════════════════════════════════════════════════
+// DARK MODE
+// ═══════════════════════════════════════════════════
+function toggleDarkMode() {
+  const isDark = document.body.classList.toggle('dark-mode');
+  document.getElementById('dark-mode-btn').textContent = isDark ? '☀️' : '🌙';
+  localStorage.setItem('darkMode', isDark ? '1' : '0');
+}
+if (localStorage.getItem('darkMode') === '1') {
+  document.body.classList.add('dark-mode');
+  const btn = document.getElementById('dark-mode-btn');
+  if (btn) btn.textContent = '☀️';
 }
 
 // ═══════════════════════════════════════════════════

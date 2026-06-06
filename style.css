@@ -20,12 +20,6 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; cursor: url('img/lipscursor.webp') 47 55, auto !important; }
 
-/* ── CUTE SCROLLBAR ── */
-::-webkit-scrollbar { width: 10px; height: 10px; }
-::-webkit-scrollbar-track { background: #fde8f0; border-radius: 99px; }
-::-webkit-scrollbar-thumb { background: var(--rose); border-radius: 99px; border: 2px solid #fde8f0; }
-::-webkit-scrollbar-thumb:hover { background: var(--rose-dark); }
-* { scrollbar-width: thin; scrollbar-color: var(--rose) #fde8f0; }
 
 body {
   font-family: 'Nunito Sans', sans-serif;
@@ -531,6 +525,16 @@ h1, h2, h3, .chunky {
   margin-bottom: 5px;
 }
 #dialogue-text { font-style: italic; }
+#dialogue-effects {
+  margin-top: 8px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  font-style: normal;
+  color: #b0a8b0;
+  letter-spacing: 0.04em;
+}
+#dialogue-effects:empty { display: none; }
 
 /* ── HOME ACTIONS ── */
 #home-actions {
@@ -1273,10 +1277,31 @@ h1, h2, h3, .chunky {
   z-index: 300;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   padding: 32px 20px 60px;
+}
+body:has(#intro-screen.show) { overflow: hidden; }
+@media (max-width: 599px) {
+  #intro-screen { padding: 0; justify-content: flex-start; background: #fff; }
+  #intro-card {
+    width: 100%;
+    max-width: 100%;
+    min-height: 100%;
+    border-radius: 0;
+    padding: 40px 24px 60px;
+    animation: none;
+    box-shadow: none;
+  }
+  #intro-body p { font-size: 20px; line-height: 1.7; }
+  #intro-tagline { font-size: 17px; }
+  #intro-body .intro-note { font-size: 19px; }
+  #intro-logo { width: 70%; }
+  #intro-start-btn img { width: 80%; }
+}
+@media (min-width: 600px) {
+  #intro-screen { overflow: hidden; justify-content: center; padding: 24px 20px; }
 }
 #intro-screen.show { display: flex; }
 #intro-card {
@@ -1351,7 +1376,21 @@ h1, h2, h3, .chunky {
   padding: 12px 16px 24px;
   max-width: 520px;
   margin: 0 auto;
+  zoom: 0.95;
 }
+
+/* Reset text elements back to normal size */
+#dialogue-box,
+#stats-bar,
+#day-done-card,
+#perk-banner,
+#action-section,
+#perks-section,
+#actions-display,
+#town-map-title {
+  zoom: 1.053;
+}
+
 #town-panel::before {
   content: '';
   position: absolute;
@@ -1494,3 +1533,53 @@ h1, h2, h3, .chunky {
     gap: 18px 36px;
   }
 }
+
+/* ── DARK MODE ── */
+body.dark-mode {
+  background: #1a1525;
+  color: #ede6f8;
+}
+body.dark-mode #stats-bar,
+body.dark-mode #dialogue-box,
+body.dark-mode .neighbor-card,
+body.dark-mode #neighbor-modal-inner,
+body.dark-mode #arrival-modal-inner,
+body.dark-mode #ending-card,
+body.dark-mode #intro-card,
+body.dark-mode .recap-tile,
+body.dark-mode .fight-result-card {
+  background: #252038;
+  color: #ede6f8;
+}
+body.dark-mode #neighbor-modal {
+  background: #1a1525;
+}
+body.dark-mode .stat-val { color: #ede6f8; }
+body.dark-mode .stat-label,
+body.dark-mode .stat-icon { color: #8878a0; }
+body.dark-mode .stat-bar-wrap { background: #3a3350; }
+body.dark-mode #dialogue-text { color: #d8d0ee; }
+body.dark-mode #dialogue-effects { color: #7a6e90; }
+body.dark-mode #dialogue-speaker { color: var(--rose); }
+body.dark-mode .perk-item { color: #5a5070; border-bottom-color: #3a3350; }
+body.dark-mode .perk-item.unlocked { color: #d8d0ee; }
+body.dark-mode .perk-details { color: #9888b0; }
+body.dark-mode #town-map-title { filter: brightness(0.8); }
+body.dark-mode .action-cost { color: #7a6e90; }
+body.dark-mode #action-section-hint,
+body.dark-mode #perks-hint { color: #7a6e90; }
+body.dark-mode #day-done-card p { color: #1a4a30; }
+body.dark-mode #intro-body p,
+body.dark-mode #ending-body { color: #b8b0d0; }
+body.dark-mode #intro-tagline { color: var(--rose); }
+body.dark-mode .neighbor-name { color: #c0b8d8; }
+body.dark-mode .neighbor-card { border-color: #3a3350; }
+body.dark-mode .neighbor-card.visitable { border-color: rgba(255,112,152,.5); }
+body.dark-mode #ending-eyebrow { color: #7a6e90; }
+body.dark-mode .recap-meta { color: #7a6e90; }
+body.dark-mode .recap-subhead { color: #9888b0; }
+body.dark-mode .recap-list li { color: #c0b8d8; border-bottom-color: rgba(255,255,255,.06); }
+body.dark-mode #ending-edu { background: rgba(200,184,248,.08); color: #9888b0; }
+body.dark-mode #music-controls { background: rgba(37,32,56,0.9); }
+body.dark-mode #music-controls button { color: var(--rose); }
+body.dark-mode #dark-mode-btn { color: var(--lemon); }
