@@ -271,6 +271,15 @@ h1, h2, h3, .chunky {
   margin-bottom: 12px;
   align-items: start;
 }
+#stats-label {
+  grid-column: 1 / -1;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: #aaa;
+}
 .stat {
   display: flex;
   flex-direction: column;
@@ -330,7 +339,7 @@ h1, h2, h3, .chunky {
   position: relative;
   width: 100%;
   max-width: 320px;
-  margin-bottom: 20px;
+  margin-bottom: 6px;
   background: none;
   padding: 0;
   display: flex;
@@ -370,9 +379,10 @@ h1, h2, h3, .chunky {
   letter-spacing: .06em;
   color: #aaa;
   width: 100%;
-  max-width: 320px;
-  margin: 0 0 4px;
-  padding: 0 12px;
+  margin: 0 0 12px;
+  padding: 10px 14px;
+  background: #fff;
+  border-radius: var(--radius-sm);
 }
 .actions-label { flex-shrink: 0; }
 #actions-pips { display: flex; gap: 6px; align-items: center; }
@@ -1335,19 +1345,17 @@ h1, h2, h3, .chunky {
     grid-template-columns: 280px minmax(0, 1fr) 300px;
     grid-template-areas:
       "day     day       day"
-      "stats   stats     stats"
-      "perks   dialog    actions"
+      "pips    dialog    stats"
       "perks   mapttl    actions"
       "perks   map       actions";
     gap: 14px 28px;
     align-items: start;
   }
-  /* day ended: dayend row appears above dialog */
+  /* day ended: dayend pushes dialog down, perks/actions still only alongside map */
   #town-panel.day-ended {
     grid-template-areas:
       "day     day       day"
-      "stats   stats     stats"
-      "perks   dayend    actions"
+      "pips    dayend    stats"
       "perks   dialog    actions"
       "perks   mapttl    actions"
       "perks   map       actions";
@@ -1357,8 +1365,7 @@ h1, h2, h3, .chunky {
     grid-template-areas:
       "day     day       day"
       "perkban perkban   perkban"
-      "stats   stats     stats"
-      "perks   dialog    actions"
+      "pips    dialog    stats"
       "perks   mapttl    actions"
       "perks   map       actions";
   }
@@ -1366,14 +1373,14 @@ h1, h2, h3, .chunky {
     grid-template-areas:
       "day     day       day"
       "perkban perkban   perkban"
-      "stats   stats     stats"
-      "perks   dayend    actions"
+      "pips    dayend    stats"
       "perks   dialog    actions"
       "perks   mapttl    actions"
       "perks   map       actions";
   }
 
   #stats-bar       { grid-area: stats; margin-bottom: 0; }
+  #actions-counter { grid-area: pips; margin: 0; }
   #day-header      { grid-area: day; margin-bottom: 0; }
   #perk-banner.show { margin-bottom: 0; }
   #perk-banner     { grid-area: perkban; }
@@ -1384,10 +1391,11 @@ h1, h2, h3, .chunky {
   #action-section  { grid-area: actions; margin-bottom: 0; }
   #perks-section   { grid-area: perks; margin-bottom: 0; position: sticky; top: 20px; }
 
-  /* slightly roomier stats bar on desktop, still compact */
+  /* stats bar: vertical stack in left column */
   #stats-bar {
-    padding: 10px 18px;
-    gap: 20px;
+    grid-template-columns: 1fr;
+    padding: 10px 14px;
+    gap: 8px;
   }
   .stat-header { font-size: 12px; }
   .stat-val { font-size: 13px; }
@@ -1396,18 +1404,17 @@ h1, h2, h3, .chunky {
   /* roomier day header */
   #day-title { max-width: 380px; }
   #day-header .subtitle { font-size: 13px; margin-top: 4px; }
-  #actions-counter { max-width: 380px; }
+
+  /* actions-counter in right column: stack label above pips */
+  #actions-counter {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    margin-bottom: 0;
+  }
 
   /* main column polish */
   #town-map-title { text-align: left; font-size: 13px; margin-bottom: 8px; }
-
-  #actions-counter {
-    text-align: left;
-    background: #fff;
-    border-radius: var(--radius-sm);
-    padding: 10px 14px;
-    max-width: 380px;
-  }
   #dialogue-box { font-size: 15px; padding: 16px 18px; min-height: 100px; }
 
   /* sidebar headings */

@@ -220,7 +220,7 @@ function updateUI() {
   const bookBtn = document.getElementById('btn-book');
   const bookLabel = document.getElementById('book-cost-label');
   if (bookBtn) bookBtn.onclick = () => doHomeAction(screenedUnlocked ? 'screened' : 'book');
-  if (bookLabel) bookLabel.textContent = screenedUnlocked ? 'screened ✨' : '+30 💰 −15 wellness';
+  if (bookLabel) bookLabel.textContent = screenedUnlocked ? 'screened ✨  +50 💰 −10 wellness' : '+30 💰 −15 wellness';
 
   const fightBtn = document.getElementById('btn-fight-home');
   if (fightBtn) {
@@ -1086,6 +1086,32 @@ function buyPowerup(type) {
   updateUI();
   const overlay = document.getElementById('fight-overlay');
   if (overlay.classList.contains('shop-state')) resetFightOverlay();
+}
+
+// ═══════════════════════════════════════════════════
+// KONAMI CODE CHEAT
+// ═══════════════════════════════════════════════════
+const KONAMI = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a','Enter'];
+let konamiIdx = 0;
+document.addEventListener('keydown', e => {
+  if (e.key === KONAMI[konamiIdx]) {
+    konamiIdx++;
+    if (konamiIdx === KONAMI.length) {
+      konamiIdx = 0;
+      activateCheat();
+    }
+  } else {
+    konamiIdx = e.key === KONAMI[0] ? 1 : 0;
+  }
+});
+
+function activateCheat() {
+  G.perksWon = PERKS.length;
+  G.buildings.forEach(b => { b.unlocked = true; });
+  new Audio('anime-wow-sound-effect.mp3').play().catch(() => {});
+  setDialogue('✨ whoretopia', 'cheat code activated! all perks and neighbors are yours. the street is full, the lights are on, and the community center has glitter on the door. 🌟');
+  showToast('✨ whoretopia unlocked!', 3500);
+  updateUI();
 }
 
 // ═══════════════════════════════════════════════════
