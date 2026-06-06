@@ -6,8 +6,8 @@ const BUILDINGS = [
   { id:'marigold',  name:"marigold's",              emoji:'🌼', accent:'#f8e048', unlocked:true,  perkNeeded:0, mapX:24, mapY:72 },
   { id:'rose',      name:"rose's",                  emoji:'🌹', accent:'#ffa878', unlocked:false, perkNeeded:1, mapX:37, mapY:75 },
   { id:'clover',    name:"clover's legal aid",      emoji:'⚖️', accent:'#68d8a8', unlocked:false, perkNeeded:2, mapX:50, mapY:70 },
-  { id:'chamomile', name:"chamomile's",             emoji:'🏥', accent:'#ffa878', unlocked:false, perkNeeded:3, mapX:63, mapY:75 },
-  { id:'thistle',   name:"thistle's",               emoji:'🔗', accent:'#c8b8f8', unlocked:false, perkNeeded:4, mapX:76, mapY:72 },
+  { id:'chamomile', name:"chamomile's health clinic",             emoji:'🏥', accent:'#ffa878', unlocked:false, perkNeeded:3, mapX:63, mapY:75 },
+  { id:'thistle',   name:"thistle's bdsm dungeon",               emoji:'🔗', accent:'#c8b8f8', unlocked:false, perkNeeded:4, mapX:76, mapY:72 },
   { id:'center',    name:'community center',        emoji:'🏛️', accent:'#88c8f0', unlocked:false, perkNeeded:5, mapX:88, mapY:75 },
 ];
 

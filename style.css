@@ -350,6 +350,7 @@ h1, h2, h3, .chunky {
   margin-bottom: 6px;
   background: none;
   padding: 0;
+  padding-top: 5%;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -491,6 +492,8 @@ h1, h2, h3, .chunky {
   text-align: center;
   color: #555;
   line-height: 1.25;
+  width: 100%;
+  overflow-wrap: break-word;
 }
 
 /* ── DIALOGUE ── */
@@ -1456,7 +1459,7 @@ h1, h2, h3, .chunky {
     max-width: 55%;
   }
   #day-header {
-    padding-top: 16px;
+    padding-top: 15%;
   }
 }
 
