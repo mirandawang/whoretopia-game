@@ -18,7 +18,7 @@
   --radius-sm: 12px;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; cursor: url('img/lipscursor.webp') 47 55, auto !important; }
+* { box-sizing: border-box; margin: 0; padding: 0; cursor: url('img/lipscursor.webp') 32 48, auto !important; }
 
 
 body {
@@ -599,6 +599,8 @@ h1, h2, h3, .chunky {
   max-width: 60%;
   height: auto;
   cursor: pointer;
+  padding: 8px;
+  margin: -8px;
   transition: transform .15s cubic-bezier(.34,1.56,.64,1);
 }
 .action-img-btn:hover { transform: translateY(-3px); }
